@@ -1,0 +1,33 @@
+# Perk_The_Meet.perks
+# 2024-07-16 15:40:57 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 4
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = WitchShotGrantsMove
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 3
+  NavySeerTotalPerkPoints = 3
+  NecroMedicTotalPerkPoints = 1
+</PerkManager>
+

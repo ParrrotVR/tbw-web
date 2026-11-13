@@ -1,0 +1,8 @@
+# mission.txt
+# 2020-11-17 17:47:21 (-08:00)
+
+<MissionData>
+  backgroundScene = Blacksite
+</MissionData>
+
+

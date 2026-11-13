@@ -1,0 +1,14 @@
+# mission.txt
+# 2024-10-28 19:24:36 (-07:00)
+# v:2024-09-24-Thimbleberry
+
+<MissionData>
+  backgroundScene = Police
+  missionRegion = DSR
+  provingGrounds = True
+  hideOtherLevels = False
+  title = Rushwater Proving Ground
+  description = 
+</MissionData>
+
+

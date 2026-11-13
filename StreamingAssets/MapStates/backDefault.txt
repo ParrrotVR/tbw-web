@@ -1,0 +1,72 @@
+<Liv Kennedy>
+  mapPosition = -9.871255:5.57919264:0
+  localScale = 0.018992573:0.018992573:0.40726
+  Liv KennedyConnection0 = 
+  Liv KennedyConnection0name = ABDUCTED connection
+  Liv KennedyConnection0labelText = ABDUCTED
+  Liv KennedyConnection0type = MustSet
+  Liv KennedyConnection0correctDestinationName = Necromedic
+  Liv KennedyConnection1 = 
+  Liv KennedyConnection1name = LED STRIKE connection
+  Liv KennedyConnection1labelText = LED STRIKE
+  Liv KennedyConnection1type = MustSet
+  Liv KennedyConnection1correctDestinationName = Strike on PD
+</Liv Kennedy>
+<Navy Seer>
+  mapPosition = 21.2842312:17.0372963:0
+  localScale = 0.0227247719:0.0227247719:0.48729
+  Navy SeerConnection0 = 
+  Navy SeerConnection0name = old friends connection
+  Navy SeerConnection0labelText = OLD FRIENDS
+  Navy SeerConnection0type = MustSet
+  Navy SeerConnection0correctDestinationName = Witch Cop
+  Navy SeerConnection1 = 
+  Navy SeerConnection1name = served under connection
+  Navy SeerConnection1labelText = SERVED UNDER
+  Navy SeerConnection1type = MustSet
+  Navy SeerConnection1correctDestinationName = Liv Kennedy
+  Navy SeerConnection2 = 
+  Navy SeerConnection2name = arrested at connection
+  Navy SeerConnection2labelText = ARRESTED AT
+  Navy SeerConnection2type = MustSet
+  Navy SeerConnection2correctDestinationName = Strike on PD
+</Navy Seer>
+<Necromedic>
+  mapPosition = -44.01563:-19.6874981:0
+  localScale = 0.0155126676:0.0155126676:0.33264
+</Necromedic>
+<Reactor>
+  mapPosition = -8.782019:27.3498058:0
+  localScale = 0.0164234489:0.0164234489:0.35217
+  ReactorConnection0 = 
+  ReactorConnection0name = employs connection
+  ReactorConnection0labelText = EMPLOYS
+  ReactorConnection0type = MustSet
+  ReactorConnection0correctDestinationName = Liv Kennedy
+  ReactorConnection1 = 
+  ReactorConnection1name = ordered strike connection
+  ReactorConnection1labelText = ORDERED STRIKE
+  ReactorConnection1type = MustSet
+  ReactorConnection1correctDestinationName = Strike on PD
+  ReactorConnection2 = 
+  ReactorConnection2name = hates connection
+  ReactorConnection2labelText = HATES
+  ReactorConnection2destinationMapItem = Navy Seer
+  ReactorConnection2type = CanSet
+  ReactorConnection2correctDestinationName = 
+</Reactor>
+<Witch Cop>
+  mapPosition = 43.284935:25.9776:0
+  localScale = 0.021851765:0.021851765:0.46857
+  Witch CopConnection0 = 
+  Witch CopConnection0name = Fired during connection
+  Witch CopConnection0labelText = FIRED DURING
+  Witch CopConnection0type = MustSet
+  Witch CopConnection0correctDestinationName = Strike on PD
+  Witch CopConnection1 = 
+  Witch CopConnection1name = Sad about connection
+  Witch CopConnection1labelText = SAD ABOUT
+  Witch CopConnection1type = CanSet
+  Witch CopConnection1correctDestinationName = Strike on PD
+</Witch Cop>
+

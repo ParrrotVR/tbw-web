@@ -1,0 +1,9 @@
+# mission.txt
+# 2021-04-08 21:23:40 (-07:00)
+# v:2021.04.08.01
+
+<MissionData>
+  backgroundScene = CargoShipStorm
+</MissionData>
+
+

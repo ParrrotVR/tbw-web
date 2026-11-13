@@ -1,0 +1,61 @@
+# Perk_Villa_Medil.perks
+# 2024-07-16 15:52:07 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 12
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = SporeUses
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = GaleSecondWind
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = DartGasmask
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = DeathsFloor
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = GhostSkullDamage
+  acquiredPerk[] = UnlockCrowdGrenade
+  acquiredPerk[] = UnlockDeathsFloor
+  acquiredPerk[] = CenserSlamDamage
+  acquiredPerk[] = PullBrittle
+  acquiredPerk[] = SwapWithoutLOS
+  acquiredPerk[] = ArcaneBurstDamage
+  acquiredPerk[] = ChargeRampage
+  acquiredPerk[] = DeathsDoorRange
+  acquiredPerk[] = SporeIntelligent
+  acquiredPerk[] = ChargeRampageInfinite
+  acquiredPerk[] = SporeKnockback
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 5
+  WitchCopTotalPerkPoints = 5
+  NavySeerTotalPerkPoints = 6
+  NecroMedicTotalPerkPoints = 5
+  DruidTotalPerkPoints = 4
+</PerkManager>
+

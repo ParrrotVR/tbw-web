@@ -1,0 +1,13 @@
+# mission.txt
+# 2024-06-04 14:27:19 (+01:00)
+# v:2024-05-23-1-Tangelo
+
+<MissionData>
+  backgroundScene = Police
+  provingGrounds = False
+  hideOtherLevels = False
+  title = 
+  description = 
+</MissionData>
+
+

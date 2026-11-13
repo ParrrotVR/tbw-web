@@ -1,0 +1,14 @@
+# mission.txt
+# 2023-09-29 17:00:01 (-07:00)
+# v:2023-09-27-1-Corvus
+
+<MissionData>
+  backgroundScene = Chapel
+  missionRegion = DSR
+  provingGrounds = True
+  hideOtherLevels = False
+  title = Kalan Proving Ground
+  description = 
+</MissionData>
+
+

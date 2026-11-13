@@ -1,0 +1,54 @@
+# Perk_Two_Trains.perks
+# 2024-07-16 15:49:34 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 10
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = DartGasmask
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = DeathsFloor
+  acquiredPerk[] = GhostSkullDamage
+  acquiredPerk[] = CenserSlamDamage
+  acquiredPerk[] = PullBrittle
+  acquiredPerk[] = UnlockCrowdGrenade
+  acquiredPerk[] = UnlockDeathsFloor
+  acquiredPerk[] = GaleSecondWind
+  acquiredPerk[] = SporeUses
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 3
+  WitchCopTotalPerkPoints = 5
+  NavySeerTotalPerkPoints = 5
+  NecroMedicTotalPerkPoints = 4
+  DruidTotalPerkPoints = 3
+</PerkManager>
+

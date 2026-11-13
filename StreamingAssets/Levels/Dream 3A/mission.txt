@@ -1,0 +1,12 @@
+# mission.txt
+# 2022-03-21 10:04:40 (+00:00)
+# v:2021.05.19.01
+
+<MissionData>
+  backgroundScene = RailIndustrial
+  provingGrounds = False
+  title = Retraining
+  description = 
+</MissionData>
+
+

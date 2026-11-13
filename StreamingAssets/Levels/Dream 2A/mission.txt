@@ -1,0 +1,13 @@
+# mission.txt
+# 2022-03-18 15:36:09 (-07:00)
+# v:2021.05.19.01
+
+<MissionData>
+  backgroundScene = Police
+  missionRegion = DSR
+  provingGrounds = False
+  title = Rushwater Dreams
+  description = 
+</MissionData>
+
+

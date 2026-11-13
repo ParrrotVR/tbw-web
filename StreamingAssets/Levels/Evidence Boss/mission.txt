@@ -1,0 +1,10 @@
+# mission.txt
+# 2022-02-16 11:38:45 (-08:00)
+# v:2021.05.19.01
+
+<MissionData>
+  missionRegion = DSR
+  provingGrounds = False
+</MissionData>
+
+

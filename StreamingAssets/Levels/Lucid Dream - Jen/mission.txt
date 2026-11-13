@@ -1,0 +1,14 @@
+# mission.txt
+# 2023-08-01 17:13:12 (-07:00)
+# v:2023-07-18-1-Caeli
+
+<MissionData>
+  backgroundScene = Police
+  missionRegion = DSR
+  provingGrounds = False
+  hideOtherLevels = False
+  title = 
+  description = 
+</MissionData>
+
+

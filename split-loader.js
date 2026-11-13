@@ -1,0 +1,78 @@
+(function (root) {
+  "use strict";
+  var config = root.TBWSplitConfig;
+  function report(error) {
+    var label = document.getElementById("status");
+    if (label) {
+      label.hidden = false;
+      label.setAttribute("role", "alert");
+      label.textContent = "Unable to prepare game downloads. " + error.message;
+    }
+  }
+  root.TBWSplitReady = (async function () {
+    if (!config || !config.revision) throw new Error("The split-file configuration is missing.");
+    if (!root.isSecureContext || !navigator.serviceWorker)
+      throw new Error("Split downloads require HTTPS, or localhost on this computer.");
+    if (!root.ReadableStream || !root.crypto || !root.crypto.subtle)
+      throw new Error("This browser does not support verified split downloads.");
+    var workerURL = new URL("sw.js", document.baseURI).href;
+    var registration = await navigator.serviceWorker.register(workerURL, { updateViaCache: "none" });
+    await new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () {
+        finish(new Error("The download worker did not activate. Reload the page to try again."));
+      }, 60000);
+      var watched = [];
+      function finish(error) {
+        clearTimeout(timer);
+        navigator.serviceWorker.removeEventListener("controllerchange", check);
+        registration.removeEventListener("updatefound", watch);
+        watched.forEach(function (worker) { worker.removeEventListener("statechange", check); });
+        if (error) reject(error); else resolve();
+      }
+      function check() {
+        var controller = navigator.serviceWorker.controller;
+        var pending = registration.installing || registration.waiting;
+        if (pending && pending.state === "redundant") {
+          finish(new Error("The download worker could not install. Check the uploaded files."));
+        } else if (controller && controller.scriptURL === workerURL && !pending) finish();
+      }
+      function watch() {
+        [registration.installing, registration.waiting, registration.active].forEach(function (worker) {
+          if (worker && watched.indexOf(worker) < 0) {
+            watched.push(worker);
+            worker.addEventListener("statechange", check);
+          }
+        });
+        check();
+      }
+      navigator.serviceWorker.addEventListener("controllerchange", check);
+      registration.addEventListener("updatefound", watch);
+      watch();
+    });
+    await new Promise(function (resolve, reject) {
+      var channel = new MessageChannel();
+      var timer = setTimeout(function () {
+        channel.port1.close();
+        reject(new Error("The download worker stopped responding. Reload the page."));
+      }, 30000);
+      channel.port1.onmessage = function (event) {
+        clearTimeout(timer);
+        channel.port1.close();
+        if (event.data && event.data.revision === config.revision) resolve();
+        else reject(new Error(event.data && event.data.error || "The site has mixed game versions. Reload after the upload completes."));
+      };
+      navigator.serviceWorker.controller.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
+    });
+  })().catch(function (error) { report(error); throw error; });
+})(window);
+
+navigator.serviceWorker && navigator.serviceWorker.addEventListener("message", function (event) {
+  if (event.data && event.data.type === "TBW_SPLIT_ERROR") {
+    var label = document.getElementById("scene-status") || document.getElementById("status");
+    if (label) {
+      label.hidden = false;
+      label.setAttribute("role", "alert");
+      label.textContent = "Game asset download failed. " + event.data.error + " Reload to retry; verified parts are kept.";
+    }
+  }
+});

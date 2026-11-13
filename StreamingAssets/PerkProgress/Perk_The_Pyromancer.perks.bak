@@ -1,0 +1,35 @@
+# Perk_The_Pyromancer.perks
+# 2024-06-11 13:43:22 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 5
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = PredictiveShotRefresh
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = DeathsDoorUses
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 3
+  NavySeerTotalPerkPoints = 3
+  NecroMedicTotalPerkPoints = 3
+</PerkManager>
+
