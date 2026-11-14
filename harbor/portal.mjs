@@ -2,15 +2,27 @@ import './browser.mjs';
 import { getRelay, saveRelay, portalBase } from './relay-settings.mjs';
 const $ = selector => document.querySelector(selector);
 let gameFrame = null;
+let activeGame = null;
+let startingGame = false;
+let closingGame = null;
 let currentView = 'browser';
 const gameURL = new URL('https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@eff26e9a2c3d335135c6c62e8745aafc60051df6/index.svg');
 if (location.hostname.endsWith('jsdelivr.net')) gameURL.host = location.host;
+const games = {
+  tbw: { title: 'Tactical Breach Wizards', url: gameURL.href, action: '#game-card-action' },
+  gd: { title: 'Geometry Dash', url: new URL('games/geometry-dash.html', portalBase).href, action: '#gd-card-action' },
+};
+function updateGameCards() {
+  for (const [id, game] of Object.entries(games)) {
+    $(game.action).textContent = gameFrame && activeGame === id ? 'Resume game ↗' : 'Play game ↗';
+  }
+}
 function gameWindow() {
   const queue = gameFrame ? [gameFrame.contentWindow] : [];
   for (let count = 0; queue.length && count < 6; count++) {
     const candidate = queue.shift();
     try {
-      if (candidate.unityInstance?.Module) return candidate;
+      if (candidate.unityInstance?.Module || candidate.HarborGame) return candidate;
       for (let i = 0; i < Math.min(candidate.frames.length, 3); i++) queue.push(candidate.frames[i]);
     } catch {}
   }
@@ -19,6 +31,7 @@ function gameWindow() {
 function pauseGame(pause) {
   const target = gameWindow();
   try {
+    if (target?.HarborGame) { target.HarborGame.pause(pause); return; }
     const module = target?.unityInstance?.Module;
     if (pause) { module?.pauseMainLoop?.(); target?.dispatchEvent(new Event('blur')); }
     else module?.resumeMainLoop?.();
@@ -46,29 +59,50 @@ function releaseWebsites() {
   if (state.controller) state.controller.frames = [];
   state.frame = null;
 }
-function startGame() {
-  if (!gameFrame) {
-    releaseWebsites();
-    gameFrame = document.createElement('iframe');
-    gameFrame.title = 'Tactical Breach Wizards';
-    gameFrame.allow = 'autoplay; fullscreen; gamepad; clipboard-write';
-    gameFrame.allowFullscreen = true;
-    gameFrame.src = gameURL.href;
-    $('#game-player').append(gameFrame);
-    $('#game-card-action').textContent = 'Resume game ↗';
-  }
-  view('game');
-  gameFrame.focus();
+async function startGame(id) {
+  if (startingGame || !games[id]) return;
+  startingGame = true;
+  try {
+    if (closingGame) await closingGame;
+    if (gameFrame && activeGame !== id) await closeGame();
+    if (!gameFrame) {
+      releaseWebsites();
+      activeGame = id;
+      gameFrame = document.createElement('iframe');
+      gameFrame.title = games[id].title;
+      gameFrame.allow = 'autoplay; fullscreen; gamepad; clipboard-write';
+      gameFrame.allowFullscreen = true;
+      gameFrame.addEventListener('load', () => pauseGame(currentView !== 'game'));
+      gameFrame.src = games[id].url;
+      $('#game-title').textContent = games[id].title;
+      $('#game-message').hidden = true;
+      $('#game-player').append(gameFrame);
+      updateGameCards();
+    }
+    view('game');
+    gameFrame.focus();
+  } catch (error) {
+    view(gameFrame ? 'game' : 'games');
+    const message = $('#game-message');
+    message.hidden = false; message.textContent = error.message || 'The game could not be opened.';
+  } finally { startingGame = false; }
 }
-async function closeGame() {
-  if (!gameFrame) return;
+function closeGame() {
+  if (closingGame) return closingGame;
+  if (!gameFrame) return Promise.resolve();
+  closingGame = saveAndCloseGame().finally(() => { closingGame = null; });
+  return closingGame;
+}
+async function saveAndCloseGame() {
   const button = $('#game-close');
   button.disabled = true; button.textContent = 'Saving…';
   const message = $('#game-message'); message.hidden = true;
   try {
     const target = gameWindow();
     const module = target?.unityInstance?.Module;
-    if (module?.calledRun && module.TBWFileSystem) {
+    if (target?.HarborGame) {
+      await target.HarborGame.save();
+    } else if (module?.calledRun && module.TBWFileSystem) {
       pauseGame(true);
       const saveButton = target.document.getElementById('save-now');
       if (saveButton && !saveButton.disabled) saveButton.click();
@@ -77,20 +111,21 @@ async function closeGame() {
         module.TBWFileSystem.syncfs(false, error => { clearTimeout(timer); if (error) reject(error); else resolve(); });
       });
     }
-    gameFrame.remove(); gameFrame = null;
-    $('#game-card-action').textContent = 'Play game ↗';
+    gameFrame.remove(); gameFrame = null; activeGame = null;
+    updateGameCards();
     document.body.classList.remove('game-expanded');
     view('games');
   } catch (error) {
     message.hidden = false; message.textContent = error.message || 'The save could not be completed. The game is still open.';
-    pauseGame(false);
+    pauseGame(currentView !== 'game');
     throw error;
   } finally { button.disabled = false; button.textContent = 'Save & close'; }
 }
 $('#view-browser').addEventListener('click', () => view('browser'));
 $('#view-games').addEventListener('click', () => view('games'));
 $('#game-library').addEventListener('click', () => view('games'));
-$('#play-tbw').addEventListener('click', startGame);
+$('#play-tbw').addEventListener('click', () => startGame('tbw'));
+$('#play-gd').addEventListener('click', () => startGame('gd'));
 $('#game-close').addEventListener('click', () => closeGame().catch(() => {}));
 $('#game-fullscreen').addEventListener('click', async () => {
   const element = $('#game-view');

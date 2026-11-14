@@ -305,9 +305,11 @@ self.addEventListener("fetch", event => {
     if (asset) return splitResponse(event.request, asset, finish, event.clientId);
     finish();
     const cache = await caches.open(CACHE);
-    if (["index.html", "harbor/browser.html"].some(name => url.pathname === new URL(local(name)).pathname)) {
+    if (["index.html", "harbor/browser.html", "harbor/games/geometry-dash.html"].some(name => url.pathname === new URL(local(name)).pathname)) {
       const key = url.origin + url.pathname;
-      const page = await cache.match(key) || await networkFetch(event.request);
+      const stored = await cache.match(key);
+      const page = stored || await networkFetch(event.request);
+      if (page.ok && !stored) event.waitUntil(cache.put(key, page.clone()).catch(() => {}));
       return page.ok ? htmlPage(page, event.request.method === "HEAD") : page;
     }
     if (event.request.mode === "navigate") {
