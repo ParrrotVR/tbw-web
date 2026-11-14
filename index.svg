@@ -2,77 +2,111 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <foreignObject width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml" style="background:#16191d;color:#eef0f3;min-height:100vh;font:16px system-ui;padding:20px;box-sizing:border-box">
-      <p id="status" role="status">Preparing Tactical Breach Wizards downloads…</p>
+      <p id="status" role="status">Starting the download launcher…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Open this link directly in Safari. Startup should advance through three steps.</p>
     </div>
   </foreignObject>
   <script><![CDATA[
 self.TBWSplitConfig = {"revision":"a9ddc281bb534dbd50d98c12e81cfcc5","assetBase":"./","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json"]};
+self.TBWSplitLauncher = true;
 (function (root) {
   "use strict";
   var config = root.TBWSplitConfig;
-  function report(error) {
+  var launcher = root.TBWSplitLauncher === true;
+  function progress(step, message) {
+    var label = document.getElementById("status");
+    var bar = document.getElementById("startup-progress");
+    if (label) { label.hidden = false; label.textContent = message; }
+    if (bar) bar.value = step;
+  }
+  function deadline(promise, milliseconds, message) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(new Error(message)); }, milliseconds);
+      Promise.resolve(promise).then(function (value) { clearTimeout(timer); resolve(value); }, function (error) { clearTimeout(timer); reject(error); });
+    });
+  }
+  root.TBWSplitReady = (async function () {
+    progress(0, "Step 1 of 3: connecting the download worker…");
+    if (!config || !config.revision) throw new Error("The split-file configuration is missing.");
+    if (!root.isSecureContext || !navigator.serviceWorker)
+      throw new Error("Split downloads need HTTPS and a browser that supports service workers. Open this link directly in Safari.");
+    if (!root.ReadableStream || !root.crypto || !root.crypto.subtle)
+      throw new Error("This browser does not support verified split downloads.");
+    var workerURL = new URL("sw.js", document.baseURI).href;
+    var registration = await deadline(navigator.serviceWorker.register(workerURL, { updateViaCache: "none" }), 30000,
+      "The browser did not finish registering the download worker. Open the link directly in Safari and reload.");
+    progress(1, "Step 2 of 3: preparing the game page…");
+    var worker = await new Promise(function (resolve, reject) {
+      var finished = false;
+      var watched = [];
+      var candidate = registration.installing || registration.waiting || registration.active;
+      var timer = setTimeout(function () { finish(new Error("The download worker did not activate. Reload to try again.")); }, 45000);
+      function finish(error, ready) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        registration.removeEventListener("updatefound", watch);
+        watched.forEach(function (item) { item.removeEventListener("statechange", check); });
+        if (error) reject(error); else resolve(ready);
+      }
+      function check() {
+        if (!candidate) return;
+        if (candidate.state === "redundant") finish(new Error("The download worker failed to install. Reload to retry the page files."));
+        else if (candidate.state === "activated") finish(null, candidate);
+      }
+      function watch() {
+        candidate = registration.installing || registration.waiting || registration.active || candidate;
+        if (candidate && watched.indexOf(candidate) < 0) {
+          watched.push(candidate);
+          candidate.addEventListener("statechange", check);
+        }
+        check();
+      }
+      registration.addEventListener("updatefound", watch);
+      watch();
+    });
+    if (!launcher && (!navigator.serviceWorker.controller || navigator.serviceWorker.controller.scriptURL !== workerURL)) {
+      await new Promise(function (resolve, reject) {
+        var timer = setTimeout(function () { finish(new Error("The worker is ready, but the browser did not attach it to the game page. Reload this page.")); }, 15000);
+        function finish(error) {
+          clearTimeout(timer);
+          navigator.serviceWorker.removeEventListener("controllerchange", check);
+          if (error) reject(error); else resolve();
+        }
+        function check() {
+          var current = navigator.serviceWorker.controller;
+          if (current && current.scriptURL === workerURL) finish();
+        }
+        navigator.serviceWorker.addEventListener("controllerchange", check);
+        check();
+      });
+    }
+    progress(2, "Step 3 of 3: checking the asset list…");
+    await new Promise(function (resolve, reject) {
+      var channel = new MessageChannel();
+      var timer = setTimeout(function () {
+        channel.port1.close();
+        reject(new Error("The download worker did not answer. Reload to try again."));
+      }, 15000);
+      channel.port1.onmessage = function (event) {
+        clearTimeout(timer);
+        channel.port1.close();
+        if (event.data && event.data.revision === config.revision) resolve();
+        else reject(new Error(event.data && event.data.error || "The site has mixed game versions. Open the latest game link."));
+      };
+      worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
+    });
+    progress(3, launcher ? "Opening the game…" : "Starting the game…");
+  })().catch(function (error) {
     var label = document.getElementById("status");
     if (label) {
       label.hidden = false;
       label.setAttribute("role", "alert");
       label.textContent = "Unable to prepare game downloads. " + error.message;
     }
-  }
-  root.TBWSplitReady = (async function () {
-    if (!config || !config.revision) throw new Error("The split-file configuration is missing.");
-    if (!root.isSecureContext || !navigator.serviceWorker)
-      throw new Error("Split downloads require HTTPS, or localhost on this computer.");
-    if (!root.ReadableStream || !root.crypto || !root.crypto.subtle)
-      throw new Error("This browser does not support verified split downloads.");
-    var workerURL = new URL("sw.js", document.baseURI).href;
-    var registration = await navigator.serviceWorker.register(workerURL, { updateViaCache: "none" });
-    await new Promise(function (resolve, reject) {
-      var timer = setTimeout(function () {
-        finish(new Error("The download worker did not activate. Reload the page to try again."));
-      }, 60000);
-      var watched = [];
-      function finish(error) {
-        clearTimeout(timer);
-        navigator.serviceWorker.removeEventListener("controllerchange", check);
-        registration.removeEventListener("updatefound", watch);
-        watched.forEach(function (worker) { worker.removeEventListener("statechange", check); });
-        if (error) reject(error); else resolve();
-      }
-      function check() {
-        var controller = navigator.serviceWorker.controller;
-        var pending = registration.installing || registration.waiting;
-        if (pending && pending.state === "redundant") {
-          finish(new Error("The download worker could not install. Check the uploaded files."));
-        } else if (controller && controller.scriptURL === workerURL && !pending) finish();
-      }
-      function watch() {
-        [registration.installing, registration.waiting, registration.active].forEach(function (worker) {
-          if (worker && watched.indexOf(worker) < 0) {
-            watched.push(worker);
-            worker.addEventListener("statechange", check);
-          }
-        });
-        check();
-      }
-      navigator.serviceWorker.addEventListener("controllerchange", check);
-      registration.addEventListener("updatefound", watch);
-      watch();
-    });
-    await new Promise(function (resolve, reject) {
-      var channel = new MessageChannel();
-      var timer = setTimeout(function () {
-        channel.port1.close();
-        reject(new Error("The download worker stopped responding. Reload the page."));
-      }, 30000);
-      channel.port1.onmessage = function (event) {
-        clearTimeout(timer);
-        channel.port1.close();
-        if (event.data && event.data.revision === config.revision) resolve();
-        else reject(new Error(event.data && event.data.error || "The site has mixed game versions. Reload after the upload completes."));
-      };
-      navigator.serviceWorker.controller.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
-    });
-  })().catch(function (error) { report(error); throw error; });
+    var bar = document.getElementById("startup-progress");
+    if (bar) bar.hidden = true;
+    throw error;
+  });
 })(window);
 
 TBWSplitReady.then(function () {
