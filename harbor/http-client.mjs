@@ -16,7 +16,11 @@ export class NativeHttpTransport {
       method: 'POST', headers: { 'Content-Type': 'application/octet-stream', 'X-Harbor-Request': encoded },
       body: body ?? undefined, signal, credentials: 'omit', cache: 'no-store', redirect: 'error',
     });
-    if (!response.ok || response.headers.get('x-harbor-stream') !== '1') throw new Error(await response.text());
+    if (!response.ok || response.headers.get('x-harbor-stream') !== '1') {
+      const error = new Error(await response.text());
+      error.relayStatus = response.status;
+      throw error;
+    }
     const reader = response.body.getReader();
     let chunk = new Uint8Array(); let offset = 0;
     async function take(length) {
