@@ -1,0 +1,29 @@
+{
+  "name": "harbor-browser-lab",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/server.test.mjs test/navigation.test.mjs test/tls-chain.test.mjs test/http-bridge.test.mjs test/content-filter.test.mjs test/socket-bridge.test.mjs",
+    "test:browser": "node test/browser.mjs"
+  },
+  "dependencies": {
+    "@mercuryworkshop/epoxy-transport": "3.0.2",
+    "@mercuryworkshop/libcurl-transport": "2.0.6",
+    "@mercuryworkshop/scramjet": "2.0.67-alpha.2",
+    "@mercuryworkshop/scramjet-controller": "0.0.14",
+    "@mercuryworkshop/wisp-js": "0.5.1",
+    "express": "5.1.0",
+    "impit": "0.14.7",
+    "ipaddr.js": "2.5.0",
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "25.16.0"
+  }
+}

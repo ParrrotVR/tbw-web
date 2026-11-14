@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <title>Harbor</title>
   <foreignObject width="100%" height="100%">
     <div xmlns="http://www.w3.org/1999/xhtml" style="background:#16191d;color:#eef0f3;position:relative;width:100%;height:100vh;font:16px system-ui;box-sizing:border-box">
-      <section id="launcher-panel" style="padding:20px;box-sizing:border-box"><p id="status" role="status">Starting the download launcher…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Open this link directly in Safari. Startup should advance through three steps.</p></section>
-      <iframe id="game-frame" title="Tactical Breach Wizards" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen="true" style="display:block;visibility:hidden;position:absolute;inset:0;width:100%;height:100%;border:0;background:#16191d"></iframe>
+      <section id="launcher-panel" style="padding:20px;box-sizing:border-box"><p id="status" role="status">Opening Harbor…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Browser and games. Open directly in Safari.</p></section>
+      <iframe id="game-frame" title="Harbor browser and games" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen="true" style="display:block;visibility:hidden;position:absolute;inset:0;width:100%;height:100%;border:0;background:#16191d"></iframe>
     </div>
   </foreignObject>
   <script><![CDATA[
-self.TBWSplitConfig = {"revision":"a9ddc281bb534dbd50d98c12e81cfcc5","assetBase":"https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@6615e9648f11c732e81924ff379b97c8fafd6a3c/","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json"]};
+self.TBWSplitConfig = {"revision":"2648b3f4de6c5ebd514e2e9daa19215b","assetBase":"https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@6615e9648f11c732e81924ff379b97c8fafd6a3c/","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json","harbor/browser.html","harbor/browser.css","harbor/portal.css","harbor/portal.mjs","harbor/browser.mjs","harbor/relay-settings.mjs","harbor/http-client.mjs","harbor/socket-client.mjs","harbor/navigation.mjs","harbor/browser-plugin.mjs","harbor/asset-cache.mjs","harbor/content-filter.mjs","harbor/stream-bridge.js","harbor/icons.svg","harbor/icon.svg","harbor/wizard.svg"],"portalPage":"harbor/browser.html"};
 self.TBWSplitLauncher = true;
 (function (root) {
   "use strict";
@@ -35,7 +36,7 @@ self.TBWSplitLauncher = true;
     var workerURL = new URL("sw.js", document.baseURI).href;
     var registration = await deadline(navigator.serviceWorker.register(workerURL, { updateViaCache: "none" }), 30000,
       "The browser did not finish registering the download worker. Open the link directly in Safari and reload.");
-    progress(1, "Step 2 of 3: preparing the game page…");
+    progress(1, "Step 2 of 3: preparing the browser…");
     var worker = await new Promise(function (resolve, reject) {
       var finished = false;
       var watched = [];
@@ -81,7 +82,7 @@ self.TBWSplitLauncher = true;
         check();
       });
     }
-    progress(2, "Step 3 of 3: checking the asset list…");
+    progress(2, "Step 3 of 3: checking offline files…");
     await new Promise(function (resolve, reject) {
       var channel = new MessageChannel();
       var timer = setTimeout(function () {
@@ -97,13 +98,13 @@ self.TBWSplitLauncher = true;
       worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
     });
     root.TBWSplitWorker = worker;
-    progress(3, launcher ? "Opening the game…" : "Starting the game…");
+    progress(3, launcher ? "Opening Harbor…" : "Starting the game…");
   })().catch(function (error) {
     var label = document.getElementById("status");
     if (label) {
       label.hidden = false;
       label.setAttribute("role", "alert");
-      label.textContent = "Unable to prepare game downloads. " + error.message;
+      label.textContent = "Unable to open Harbor. " + error.message;
     }
     var bar = document.getElementById("startup-progress");
     if (bar) bar.hidden = true;
@@ -116,14 +117,14 @@ self.TBWSplitLauncher = true;
   var frame = document.getElementById("game-frame");
   var panel = document.getElementById("launcher-panel");
   var label = document.getElementById("status");
-  var pageURL = new URL("index.html", document.baseURI);
+  var pageURL = new URL(TBWSplitConfig.portalPage || "index.html", document.baseURI);
   pageURL.search = location.search;
   pageURL.hash = location.hash;
   var fallbackStarted = false, opening = false, displayed = false, pageTimer;
   function fail(error) {
     clearTimeout(pageTimer);
     label.setAttribute("role", "alert");
-    label.textContent = "Unable to open the game page. " + (error.message || error);
+    label.textContent = "Unable to open Harbor. " + (error.message || error);
     var progress = document.getElementById("startup-progress");
     if (progress) progress.hidden = true;
   }
@@ -182,7 +183,7 @@ self.TBWSplitLauncher = true;
       if (!response.ok) throw new Error("The game page request failed (HTTP " + response.status + ").");
       html = await response.text();
     } finally { clearTimeout(timer); }
-    if (!/<div\s[^>]*id=["']unityContainer["']/i.test(html)) throw new Error("The downloaded page is incomplete.");
+    if (!/<div\s[^>]*id=["'](?:unityContainer|harbor-app)["']/i.test(html)) throw new Error("The downloaded page is incomplete.");
     var base = new URL("./", pageURL).href.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
     html = html.replace(/<head(?:\s[^>]*)?>/i, function (head) { return head + '<base href="' + base + '">'; });
     var documentInFrame = frame.contentDocument;
@@ -195,7 +196,7 @@ self.TBWSplitLauncher = true;
     if (!opening || displayed) return;
     try {
       var documentInFrame = frame.contentDocument;
-      if (documentInFrame && documentInFrame.getElementById("unityContainer")) { showGame(); return; }
+      if (documentInFrame && (documentInFrame.getElementById("unityContainer") || documentInFrame.getElementById("harbor-app"))) { showGame(); return; }
       if (!documentInFrame || frame.contentWindow.location.href === "about:blank") return;
       renderHTML().catch(fail);
     } catch (error) { fail(error); }
@@ -205,7 +206,7 @@ self.TBWSplitLauncher = true;
     opening = true;
     pageTimer = setTimeout(function () {
       try {
-        if (frame.contentDocument && frame.contentDocument.getElementById("unityContainer")) showGame();
+        if (frame.contentDocument && (frame.contentDocument.getElementById("unityContainer") || frame.contentDocument.getElementById("harbor-app"))) showGame();
         else if (!fallbackStarted) renderHTML().catch(fail);
         else fail(new Error("The game page did not finish opening. Reload this SVG link."));
       } catch (error) { fail(error); }

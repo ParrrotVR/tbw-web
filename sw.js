@@ -1,4 +1,5 @@
 "use strict";
+importScripts("harbor/stream-bridge.js", "harbor/vendor/controller.sw.js", "harbor/worker-routes.js");
 importScripts("split-config.js");
 const CONFIG = self.TBWSplitConfig;
 const SCOPE = self.registration.scope;
@@ -285,6 +286,7 @@ self.addEventListener("activate", event => event.waitUntil((async () => {
 
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
+  if (HarborRoutes.matches(event)) { event.respondWith(HarborRoutes.route(event)); return; }
   if (!["GET", "HEAD"].includes(event.request.method) || url.origin !== self.location.origin || !url.href.startsWith(SCOPE)) return;
   let completeResponse;
   let finishedResponse = false;
@@ -303,8 +305,9 @@ self.addEventListener("fetch", event => {
     if (asset) return splitResponse(event.request, asset, finish, event.clientId);
     finish();
     const cache = await caches.open(CACHE);
-    if (url.pathname === new URL(local("index.html")).pathname) {
-      const page = await cache.match(local("index.html")) || await networkFetch(event.request);
+    if (["index.html", "harbor/browser.html"].some(name => url.pathname === new URL(local(name)).pathname)) {
+      const key = url.origin + url.pathname;
+      const page = await cache.match(key) || await networkFetch(event.request);
       return page.ok ? htmlPage(page, event.request.method === "HEAD") : page;
     }
     if (event.request.mode === "navigate") {

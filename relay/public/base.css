@@ -1,0 +1,2 @@
+/* Deliberately local: no fonts, images or scripts fetched from a CDN. */
+html{scroll-behavior:smooth}button{touch-action:manipulation}input,textarea{font-size:16px}
