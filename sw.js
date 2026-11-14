@@ -90,24 +90,33 @@ async function sha256(bytes) {
   return Array.from(hash, byte => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function readPart(part, signal, strictStorage) {
+async function readPart(part, signal, strictStorage, activity) {
+  if (activity) activity("queued", 0);
   await partSlot(signal);
   try {
     const cache = await caches.open(PART_CACHE);
     const key = local("__tbw_parts/" + part.sha256 + ".part");
-    let stored = await cache.match(key);
+    const stored = await cache.match(key);
     if (stored) {
       const bytes = new Uint8Array(await stored.arrayBuffer());
-      if (bytes.byteLength === part.bytes && await sha256(bytes) === part.sha256) return bytes;
+      if (bytes.byteLength === part.bytes && await sha256(bytes) === part.sha256) {
+        if (activity) activity("cached", part.bytes);
+        return bytes;
+      }
       await cache.delete(key);
     }
     let lastError;
     for (let attempt = 0; attempt < 3; attempt++) {
       if (signal.aborted) throw new DOMException("Download cancelled", "AbortError");
       const controller = new AbortController();
-      const abort = () => controller.abort();
-      signal.addEventListener("abort", abort, { once: true });
-      const timer = setTimeout(abort, 90000);
+      let idleTimer, timedOut = false;
+      const cancel = () => controller.abort();
+      const timeout = () => { timedOut = true; controller.abort(); };
+      const resetIdle = () => { clearTimeout(idleTimer); idleTimer = setTimeout(timeout, 45000); };
+      const totalTimer = setTimeout(timeout, 240000);
+      signal.addEventListener("abort", cancel, { once: true });
+      resetIdle();
+      if (activity) activity(attempt ? "retrying" : "downloading", 0);
       try {
         const url = new URL(part.url, new URL(CONFIG.assetBase || "./", SCOPE));
         if (url.protocol !== "https:" && url.origin !== self.location.origin)
@@ -117,34 +126,58 @@ async function readPart(part, signal, strictStorage) {
           cache: attempt ? "reload" : "default"
         });
         if (!response.ok) throw new Error("Part request failed (HTTP " + response.status + "): " + part.url);
-        const wire = new Uint8Array(await response.arrayBuffer());
-        // A small envelope prevents hosts from treating a complete gzip part as HTTP-compressed data.
+        resetIdle();
+        let wire;
+        if (response.body && response.body.getReader) {
+          wire = new Uint8Array(part.bytes + 8);
+          const reader = response.body.getReader();
+          let received = 0;
+          try {
+            while (true) {
+              const result = await reader.read();
+              if (result.done) break;
+              resetIdle();
+              if (received + result.value.byteLength > wire.byteLength)
+                throw new Error("The part is larger than expected: " + part.url);
+              wire.set(result.value, received);
+              received += result.value.byteLength;
+              if (activity) activity("downloading", received);
+            }
+            if (received !== wire.byteLength) throw new Error("The part download is incomplete: " + part.url);
+          } catch (error) {
+            await reader.cancel().catch(() => {});
+            throw error;
+          } finally { reader.releaseLock(); }
+        } else wire = new Uint8Array(await response.arrayBuffer());
+        clearTimeout(idleTimer);
+        clearTimeout(totalTimer);
         if (wire.byteLength !== part.bytes + 8 ||
             [84, 66, 87, 80, 65, 82, 84, 49].some((byte, index) => wire[index] !== byte))
-          throw new Error("Invalid or incomplete split part: " + part.url);
+          throw new Error("Invalid split part: " + part.url);
         const bytes = wire.subarray(8);
         if (await sha256(bytes) !== part.sha256) throw new Error("Split part checksum failed: " + part.url);
         if (signal.aborted) throw new DOMException("Download cancelled", "AbortError");
+        if (activity) activity("verified", part.bytes);
         try {
           await cache.put(key, new Response(bytes, { headers: { "Content-Type": "application/octet-stream" } }));
-        } catch (error) {
-          if (strictStorage) throw error;
-          // A full cache must not prevent online play.
-        }
+        } catch (error) { if (strictStorage) throw error; }
         return bytes;
       } catch (error) {
-        lastError = error;
         if (signal.aborted || error.name === "QuotaExceededError") throw error;
+        lastError = timedOut
+          ? new Error("Part download timed out: " + part.url)
+          : new Error((error.name === "AbortError" ? "The browser interrupted the part download" : error.message) + ": " + part.url);
       } finally {
-        clearTimeout(timer);
-        signal.removeEventListener("abort", abort);
+        clearTimeout(idleTimer);
+        clearTimeout(totalTimer);
+        signal.removeEventListener("abort", cancel);
       }
     }
     throw lastError;
   } finally { releasePart(); }
 }
 
-async function splitResponse(request, asset) {
+async function splitResponse(request, asset, finish, clientId) {
   let first = 0, last = asset.bytes - 1, status = 200;
   const range = request.headers.get("Range");
   if (range) {
@@ -154,7 +187,7 @@ async function splitResponse(request, asset) {
       last = match[1] && match[2] ? Math.min(Number(match[2]), last) : last;
     } else first = asset.bytes;
     if (!Number.isSafeInteger(first) || !Number.isSafeInteger(last) || first > last || first >= asset.bytes)
-      return new Response(null, { status: 416, headers: { "Content-Range": "bytes */" + asset.bytes } });
+      { finish(); return new Response(null, { status: 416, headers: { "Content-Range": "bytes */" + asset.bytes } }); }
     status = 206;
   }
   const headers = new Headers({
@@ -162,34 +195,47 @@ async function splitResponse(request, asset) {
     "Accept-Ranges": "bytes", "Cache-Control": "no-cache", "X-TBW-Split": CONFIG.revision
   });
   if (status === 206) headers.set("Content-Range", "bytes " + first + "-" + last + "/" + asset.bytes);
-  if (request.method === "HEAD") return new Response(null, { status, headers });
+  if (request.method === "HEAD") { finish(); return new Response(null, { status, headers }); }
   const controller = new AbortController();
-  const abort = () => controller.abort();
-  if (request.signal.aborted) abort();
-  request.signal.addEventListener("abort", abort, { once: true });
+  let cancelled = false, complete = false, lastActivity = 0;
+  const notify = async data => {
+    if (!clientId) return;
+    const client = await self.clients.get(clientId).catch(() => null);
+    if (client) client.postMessage(data);
+  };
+  const activity = (phase, bytes) => {
+    const now = Date.now();
+    if (phase === "downloading" && bytes && now - lastActivity < 500) return;
+    lastActivity = now;
+    void notify({ type: "TBW_SPLIT_ACTIVITY", url: asset.url, phase, bytes }).catch(() => {});
+  };
   let index = 0, offset = 0;
   while (offset + asset.parts[index].bytes <= first) offset += asset.parts[index++].bytes;
   const body = new ReadableStream({
     async pull(stream) {
+      if (cancelled || complete) return;
       try {
         const part = asset.parts[index++];
-        const bytes = await readPart(part, controller.signal, false);
+        const bytes = await readPart(part, controller.signal, false, activity);
+        if (cancelled) return;
         stream.enqueue(bytes.subarray(Math.max(0, first - offset), Math.min(part.bytes, last - offset + 1)));
         offset += part.bytes;
         if (offset > last) {
-          request.signal.removeEventListener("abort", abort);
+          complete = true;
           stream.close();
+          finish();
         }
       } catch (error) {
-        request.signal.removeEventListener("abort", abort);
+        if (cancelled) { finish(); return; }
+        complete = true;
         controller.abort();
         stream.error(error);
-        const clients = await self.clients.matchAll({ type: "window" });
-        for (const client of clients) client.postMessage({ type: "TBW_SPLIT_ERROR", error: error.message });
+        finish();
+        await notify({ type: "TBW_SPLIT_ERROR", error: asset.url + ": " + error.message }).catch(() => {});
       }
     },
-    cancel() { request.signal.removeEventListener("abort", abort); controller.abort(); }
-  }, { highWaterMark: 0 });
+    cancel() { cancelled = true; controller.abort(); finish(); }
+  }, { highWaterMark: 1 });
   return new Response(body, { status, headers });
 }
 
@@ -209,10 +255,22 @@ self.addEventListener("activate", event => event.waitUntil((async () => {
 self.addEventListener("fetch", event => {
   const url = new URL(event.request.url);
   if (!["GET", "HEAD"].includes(event.request.method) || url.origin !== self.location.origin || !url.href.startsWith(SCOPE)) return;
+  let completeResponse;
+  let finishedResponse = false;
+  const completion = new Promise(resolve => { completeResponse = resolve; });
+  const lifetimeTimer = setTimeout(() => finish(), 10 * 60 * 1000);
+  function finish() {
+    if (finishedResponse) return;
+    finishedResponse = true;
+    clearTimeout(lifetimeTimer);
+    completeResponse();
+  }
+  event.waitUntil(completion);
   event.respondWith((async () => {
     const metadata = await manifest();
     const asset = metadata.routes.get(url.origin + url.pathname);
-    if (asset) return splitResponse(event.request, asset);
+    if (asset) return splitResponse(event.request, asset, finish, event.clientId);
+    finish();
     const cache = await caches.open(CACHE);
     if (event.request.mode === "navigate") {
       try {
@@ -239,7 +297,7 @@ self.addEventListener("fetch", event => {
     if (response.ok && !/\/(?:sw|split-config)\.js$/.test(url.pathname))
       event.waitUntil(cache.put(event.request, response.clone()).catch(() => {}));
     return response;
-  })());
+  })().catch(error => { finish(); throw error; }));
 });
 
 self.addEventListener("message", event => {

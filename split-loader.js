@@ -100,6 +100,10 @@
 })(window);
 
 navigator.serviceWorker && navigator.serviceWorker.addEventListener("message", function (event) {
+  if (event.data && event.data.type === "TBW_SPLIT_ACTIVITY") {
+    window.TBWSplitLastActivity = Date.now();
+    return;
+  }
   if (event.data && event.data.type === "TBW_SPLIT_ERROR") {
     var label = document.getElementById("scene-status") || document.getElementById("status");
     if (label) {

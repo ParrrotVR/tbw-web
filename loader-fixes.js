@@ -58,7 +58,7 @@
 
     loader.downloadJob = function (module, job) {
       if (module.startupError) return;
-      var xhr = job.parameters.objParameters
+      var xhr = !root.TBWSplitConfig && job.parameters.objParameters
         ? new loader.UnityCache.XMLHttpRequest(job.parameters.objParameters) : new root.XMLHttpRequest();
       var settled = false;
       var timer;
@@ -79,7 +79,14 @@
       }
       function resetTimeout() {
         root.clearTimeout(timer);
-        timer = root.setTimeout(function () { fail("The game download stopped responding"); }, timeout);
+        timer = root.setTimeout(function checkIdle() {
+          if (root.TBWSplitConfig && root.TBWSplitLastActivity &&
+              Date.now() - root.TBWSplitLastActivity < timeout) {
+            timer = root.setTimeout(checkIdle, timeout);
+            return;
+          }
+          fail("The game download stopped responding");
+        }, timeout);
       }
       try {
         xhr.open("GET", job.parameters.url);
