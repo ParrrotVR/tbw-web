@@ -4,7 +4,23 @@ const CONFIG = self.TBWSplitConfig;
 const SCOPE = self.registration.scope;
 const PREFIX = "tbw-split:" + new URL(SCOPE).pathname + ":";
 const CACHE = PREFIX + CONFIG.revision;
-const PART_CACHE = PREFIX + "parts";
+const PART_CACHE = "tbw-split-parts:tbw-web:v1";
+const partKey = part => new URL("/__tbw_parts/tbw-web/" + part.sha256 + ".part", self.location.origin).href;
+let legacyPartStores;
+async function cachedPart(cache, key, part) {
+  const stored = await cache.match(key);
+  if (stored) return { response: stored, cache, key };
+  if (!legacyPartStores) legacyPartStores = caches.keys().then(names => names.filter(name =>
+    name.startsWith("tbw-split:") && name.endsWith(":parts") && /\/tbw-web(?:@|\/)/.test(name)).reverse());
+  for (const name of await legacyPartStores) {
+    const oldScope = name.slice("tbw-split:".length, -":parts".length);
+    const oldCache = await caches.open(name);
+    const oldKey = new URL(oldScope + "__tbw_parts/" + part.sha256 + ".part", self.location.origin).href;
+    const response = await oldCache.match(oldKey);
+    if (response) return { response, cache: oldCache, key: oldKey };
+  }
+  return null;
+}
 const local = path => new URL(path, SCOPE).href;
 const networkFetch = self.fetch.bind(self);
 let manifestPromise, downloading = false, activeParts = 0;
@@ -61,9 +77,9 @@ async function manifest() {
   return manifestPromise;
 }
 
-async function partSlot(signal) {
+async function partSlot(signal, bytes) {
   if (activeParts >= 2) await new Promise((resolve, reject) => {
-    const waiter = { resolve, reject, signal, abort: null };
+    const waiter = { resolve, reject, signal, bytes, abort: null };
     waiter.abort = () => {
       const index = waitingParts.indexOf(waiter);
       if (index >= 0) waitingParts.splice(index, 1);
@@ -72,6 +88,7 @@ async function partSlot(signal) {
     if (signal.aborted) { waiter.abort(); return; }
     signal.addEventListener("abort", waiter.abort, { once: true });
     waitingParts.push(waiter);
+    waitingParts.sort((a, b) => a.bytes - b.bytes);
   });
   else activeParts++;
   if (signal.aborted) { releasePart(); throw new DOMException("Download cancelled", "AbortError"); }
@@ -92,18 +109,18 @@ async function sha256(bytes) {
 
 async function readPart(part, signal, strictStorage, activity) {
   if (activity) activity("queued", 0);
-  await partSlot(signal);
+  await partSlot(signal, part.bytes);
   try {
     const cache = await caches.open(PART_CACHE);
-    const key = local("__tbw_parts/" + part.sha256 + ".part");
-    const stored = await cache.match(key);
+    const key = partKey(part);
+    const stored = await cachedPart(cache, key, part);
     if (stored) {
-      const bytes = new Uint8Array(await stored.arrayBuffer());
+      const bytes = new Uint8Array(await stored.response.arrayBuffer());
       if (bytes.byteLength === part.bytes && await sha256(bytes) === part.sha256) {
         if (activity) activity("cached", part.bytes);
         return bytes;
       }
-      await cache.delete(key);
+      await stored.cache.delete(stored.key);
     }
     let lastError;
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -209,14 +226,20 @@ async function splitResponse(request, asset, finish, clientId) {
     lastActivity = now;
     void notify({ type: "TBW_SPLIT_ACTIVITY", url: asset.url, phase, bytes }).catch(() => {});
   };
-  let index = 0, offset = 0;
+  let index = 0, offset = 0, nextPart = null;
   while (offset + asset.parts[index].bytes <= first) offset += asset.parts[index++].bytes;
   const body = new ReadableStream({
     async pull(stream) {
       if (cancelled || complete) return;
       try {
         const part = asset.parts[index++];
-        const bytes = await readPart(part, controller.signal, false, activity);
+        const currentPart = nextPart || readPart(part, controller.signal, false, activity);
+        nextPart = null;
+        if (asset.bytes > 16 * 1024 * 1024 && index < asset.parts.length && offset + part.bytes <= last) {
+          nextPart = readPart(asset.parts[index], controller.signal, false, activity);
+          nextPart.catch(() => {});
+        }
+        const bytes = await currentPart;
         if (cancelled) return;
         stream.enqueue(bytes.subarray(Math.max(0, first - offset), Math.min(part.bytes, last - offset + 1)));
         offset += part.bytes;
@@ -248,7 +271,7 @@ self.addEventListener("install", event => event.waitUntil((async () => {
 
 self.addEventListener("activate", event => event.waitUntil((async () => {
   for (const name of await caches.keys())
-    if (name.startsWith(PREFIX) && name !== CACHE && name !== PART_CACHE) await caches.delete(name);
+    if (name.startsWith(PREFIX) && name !== CACHE && !name.endsWith(":parts")) await caches.delete(name);
   await self.clients.claim();
 })()));
 
