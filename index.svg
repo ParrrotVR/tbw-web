@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
   <foreignObject width="100%" height="100%">
-    <div xmlns="http://www.w3.org/1999/xhtml" style="background:#16191d;color:#eef0f3;min-height:100vh;font:16px system-ui;padding:20px;box-sizing:border-box">
-      <p id="status" role="status">Starting the download launcher…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Open this link directly in Safari. Startup should advance through three steps.</p>
+    <div xmlns="http://www.w3.org/1999/xhtml" style="background:#16191d;color:#eef0f3;position:relative;width:100%;height:100vh;font:16px system-ui;box-sizing:border-box">
+      <section id="launcher-panel" style="padding:20px;box-sizing:border-box"><p id="status" role="status">Starting the download launcher…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Open this link directly in Safari. Startup should advance through three steps.</p></section>
+      <iframe id="game-frame" title="Tactical Breach Wizards" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen="true" style="display:block;visibility:hidden;position:absolute;inset:0;width:100%;height:100%;border:0;background:#16191d"></iframe>
     </div>
   </foreignObject>
   <script><![CDATA[
@@ -95,6 +96,7 @@ self.TBWSplitLauncher = true;
       };
       worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
     });
+    root.TBWSplitWorker = worker;
     progress(3, launcher ? "Opening the game…" : "Starting the game…");
   })().catch(function (error) {
     var label = document.getElementById("status");
@@ -109,11 +111,107 @@ self.TBWSplitLauncher = true;
   });
 })(window);
 
-TBWSplitReady.then(function () {
-  var destination = new URL("index.html", location.href);
-  destination.search = location.search;
-  destination.hash = location.hash;
-  location.replace(destination.href);
-}).catch(function () {});
+(function () {
+  "use strict";
+  var frame = document.getElementById("game-frame");
+  var panel = document.getElementById("launcher-panel");
+  var label = document.getElementById("status");
+  var pageURL = new URL("index.html", document.baseURI);
+  pageURL.search = location.search;
+  pageURL.hash = location.hash;
+  var fallbackStarted = false, opening = false, displayed = false, pageTimer;
+  function fail(error) {
+    clearTimeout(pageTimer);
+    label.setAttribute("role", "alert");
+    label.textContent = "Unable to open the game page. " + (error.message || error);
+    var progress = document.getElementById("startup-progress");
+    if (progress) progress.hidden = true;
+  }
+  function showGame() {
+    if (displayed) return;
+    displayed = true;
+    clearTimeout(pageTimer);
+    panel.style.display = "none";
+    frame.style.display = "block";
+    frame.style.visibility = "visible";
+    try { frame.contentWindow.focus(); } catch (_) {}
+  }
+  function claimFrame() {
+    return new Promise(function (resolve, reject) {
+      var channel = new MessageChannel();
+      var timer = setTimeout(function () { channel.port1.close(); reject(new Error("The browser did not attach the download worker to the game frame.")); }, 15000);
+      channel.port1.onmessage = function (event) {
+        clearTimeout(timer);
+        channel.port1.close();
+        if (event.data && event.data.revision === TBWSplitConfig.revision) resolve();
+        else reject(new Error(event.data && event.data.error || "The game worker has a different version."));
+      };
+      var worker = window.TBWSplitWorker || navigator.serviceWorker.controller;
+      if (!worker) { clearTimeout(timer); channel.port1.close(); reject(new Error("The download worker is unavailable.")); return; }
+      worker.postMessage({ type: "TBW_SPLIT_CLAIM" }, [channel.port2]);
+    });
+  }
+  async function renderHTML() {
+    if (fallbackStarted || displayed) return;
+    fallbackStarted = true;
+    label.textContent = "Rendering the game page…";
+    await claimFrame();
+    var childNavigator = frame.contentWindow.navigator;
+    var workerURL = new URL("sw.js", document.baseURI).href;
+    if (!childNavigator.serviceWorker.controller || childNavigator.serviceWorker.controller.scriptURL !== workerURL) {
+      await new Promise(function (resolve, reject) {
+        var timer = setTimeout(function () { finish(new Error("The browser could not attach the worker. Reopen this SVG link directly in Safari.")); }, 15000);
+        function finish(error) {
+          clearTimeout(timer);
+          childNavigator.serviceWorker.removeEventListener("controllerchange", check);
+          if (error) reject(error); else resolve();
+        }
+        function check() {
+          var worker = childNavigator.serviceWorker.controller;
+          if (worker && worker.scriptURL === workerURL) finish();
+        }
+        childNavigator.serviceWorker.addEventListener("controllerchange", check);
+        check();
+      });
+    }
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 30000);
+    var html;
+    try {
+      var response = await fetch(pageURL.href, { signal: controller.signal });
+      if (!response.ok) throw new Error("The game page request failed (HTTP " + response.status + ").");
+      html = await response.text();
+    } finally { clearTimeout(timer); }
+    if (!/<div\s[^>]*id=["']unityContainer["']/i.test(html)) throw new Error("The downloaded page is incomplete.");
+    var base = new URL("./", pageURL).href.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    html = html.replace(/<head(?:\s[^>]*)?>/i, function (head) { return head + '<base href="' + base + '">'; });
+    var documentInFrame = frame.contentDocument;
+    documentInFrame.open();
+    documentInFrame.write(html);
+    documentInFrame.close();
+    showGame();
+  }
+  frame.addEventListener("load", function () {
+    if (!opening || displayed) return;
+    try {
+      var documentInFrame = frame.contentDocument;
+      if (documentInFrame && documentInFrame.getElementById("unityContainer")) { showGame(); return; }
+      if (!documentInFrame || frame.contentWindow.location.href === "about:blank") return;
+      renderHTML().catch(fail);
+    } catch (error) { fail(error); }
+  });
+  TBWSplitReady.then(function () {
+    label.textContent = "Opening the game page…";
+    opening = true;
+    pageTimer = setTimeout(function () {
+      try {
+        if (frame.contentDocument && frame.contentDocument.getElementById("unityContainer")) showGame();
+        else if (!fallbackStarted) renderHTML().catch(fail);
+        else fail(new Error("The game page did not finish opening. Reload this SVG link."));
+      } catch (error) { fail(error); }
+    }, 45000);
+    frame.src = pageURL.href;
+  }).catch(function () {});
+})();
   ]]></script>
 </svg>

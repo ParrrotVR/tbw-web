@@ -23,6 +23,14 @@ async function cachedPart(cache, key, part) {
 }
 const local = path => new URL(path, SCOPE).href;
 const networkFetch = self.fetch.bind(self);
+function htmlPage(response, headOnly) {
+  const headers = new Headers(response.headers);
+  headers.set("Content-Type", "text/html; charset=utf-8");
+  headers.delete("Content-Encoding");
+  headers.delete("Content-Length");
+  return new Response(headOnly ? null : response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 let manifestPromise, downloading = false, activeParts = 0;
 const waitingParts = [];
 
@@ -295,21 +303,15 @@ self.addEventListener("fetch", event => {
     if (asset) return splitResponse(event.request, asset, finish, event.clientId);
     finish();
     const cache = await caches.open(CACHE);
+    if (url.pathname === new URL(local("index.html")).pathname) {
+      const page = await cache.match(local("index.html")) || await networkFetch(event.request);
+      return page.ok ? htmlPage(page, event.request.method === "HEAD") : page;
+    }
     if (event.request.mode === "navigate") {
-      try {
-        const response = await networkFetch(event.request);
-        if (response.ok && url.pathname === new URL(local("index.html")).pathname) {
-          // jsDelivr serves HTML as text/plain. The worker supplies the game page's MIME type.
-          const headers = new Headers(response.headers);
-          headers.set("Content-Type", "text/html; charset=utf-8");
-          headers.delete("Content-Encoding");
-          headers.delete("Content-Length");
-          return new Response(response.body, { status: response.status, headers });
-        }
-        return response;
-      } catch (error) {
+      try { return await networkFetch(event.request); }
+      catch (error) {
         const page = await cache.match(local("index.html"));
-        if (page) return new Response(page.body, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+        if (page) return htmlPage(page, false);
         throw error;
       }
     }
@@ -327,6 +329,14 @@ self.addEventListener("message", event => {
   if (!event.data) return;
   const port = event.ports && event.ports[0];
   const send = data => { if (port) port.postMessage(data); };
+  if (event.data.type === "TBW_SPLIT_CLAIM") {
+    event.waitUntil((async () => {
+      await self.clients.claim();
+      await manifest();
+      send({ revision: CONFIG.revision });
+    })().catch(error => send({ error: error.message })));
+    return;
+  }
   if (event.data.type === "TBW_SPLIT_READY") {
     event.waitUntil(manifest().then(() => send({ revision: CONFIG.revision })).catch(error => send({ error: error.message })));
     return;

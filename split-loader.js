@@ -85,6 +85,7 @@
       };
       worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
     });
+    root.TBWSplitWorker = worker;
     progress(3, launcher ? "Opening the game…" : "Starting the game…");
   })().catch(function (error) {
     var label = document.getElementById("status");
