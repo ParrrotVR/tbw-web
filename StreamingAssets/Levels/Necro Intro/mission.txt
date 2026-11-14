@@ -1,0 +1,13 @@
+# mission.txt
+# 2022-05-18 14:11:48 (-07:00)
+# v:2022-05-03-1-Columba
+
+<MissionData>
+  backgroundScene = Facility
+  missionRegion = Liboli
+  provingGrounds = False
+  title = 
+  description = 
+</MissionData>
+
+

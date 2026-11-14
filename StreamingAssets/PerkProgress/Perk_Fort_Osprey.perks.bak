@@ -1,0 +1,57 @@
+# Perk_Fort_Osprey.perks
+# 2024-07-16 15:50:51 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 11
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = PullBrittle
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = CenserSlamDamage
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = GhostSkullDamage
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = DeathsFloor
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = DartGasmask
+  acquiredPerk[] = UnlockCrowdGrenade
+  acquiredPerk[] = UnlockDeathsFloor
+  acquiredPerk[] = GaleSecondWind
+  acquiredPerk[] = SporeUses
+  acquiredPerk[] = SwapWithoutLOS
+  acquiredPerk[] = ArcaneBurstDamage
+  acquiredPerk[] = ChargeRampage
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 1
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 4
+  WitchCopTotalPerkPoints = 5
+  NavySeerTotalPerkPoints = 6
+  NecroMedicTotalPerkPoints = 5
+  DruidTotalPerkPoints = 3
+</PerkManager>
+

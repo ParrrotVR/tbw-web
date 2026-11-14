@@ -1,0 +1,1268 @@
+# 1 The Cavalry.lvl
+# 2024-07-14 16:51:42 (+01:00)
+# v:2024-07-09-1-Loquat
+
+<LevelHeader>
+  type = Level
+  name = The Cavalry
+  description = 
+  timestamp = 133654459025490027
+</LevelHeader>
+<Tips>
+</Tips>
+
+#
+# Configuration
+#
+  <config:CasualSpeechManager>
+    # LevelAndTurnState
+  </config:CasualSpeechManager>
+  <config:InstructionManager>
+    # LevelAndTurnState
+    tutorialName = None
+  </config:InstructionManager>
+  <config:LevelManager>
+    # LevelAndTurnState
+    yAngle = 270
+    levelCameraRotation = -0.853553355:-0.353553325:-0.353553534:0.14644666 #(45.0, 45.0, 0.0)
+    levelCameraPosition = -12.00125:0.599999964:6.45632
+    levelCameraFieldOfView = 11.1980247
+    levelCameraPositionIsLook = True
+    badgeTimeLimit = 30
+    badgeTurnLimit = 2
+    badgeDefenestrationLimit = 0.5
+    tilesetName = ChapelTileset
+    disableAutoWall = False
+    carryOverWizardPositions = False
+    initialSelectedWizard = None
+    ignoreReinforcementDifficulty = False
+    musicTrackCategory = Kalan
+    musicTrackName = Mission 3 Level 2 Hold Them Down
+    breachIntroTrackCategory = 
+    breachIntroTrackName = 
+    playMusicSeamless = False
+    # ObjectiveList
+    Objective[] = ClearEnemiesObjective
+    # ConfidenceGoalList
+    ConfidenceGoal[] = AllWizardsFullHealthGoal
+    ConfidenceGoal[] = UnsteadyKnockbackGoal
+    UnsteadyKnockbackGoalKnockbackRequired = 5
+    ConfidenceGoal[] = DontSealDoorsGoal
+    DontSealDoorsGoalBeforeTurn = 3
+  </config:LevelManager>
+  <config:SpeechManager>
+    # LevelAndTurnState
+  </config:SpeechManager>
+# END - Configuration
+
+#
+# Static
+#
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1634
+    transformPosition = -17:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1635
+    transformPosition = -17:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1636
+    transformPosition = -17:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1637
+    transformPosition = -17:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1638
+    transformPosition = -17:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 1639
+    transformPosition = -17:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Dark Floor>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 22
+    transformPosition = -16:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 23
+    transformPosition = -15:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 24
+    transformPosition = -10:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 25
+    transformPosition = -12:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 26
+    transformPosition = -11:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 27
+    transformPosition = -10:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 28
+    transformPosition = -16:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 29
+    transformPosition = -10:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 30
+    transformPosition = -10:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 31
+    transformPosition = -10:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 32
+    transformPosition = -13:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 33
+    transformPosition = -10:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 34
+    transformPosition = -16:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 35
+    transformPosition = -16:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 36
+    transformPosition = -15:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 37
+    transformPosition = -15:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 38
+    transformPosition = -15:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 39
+    transformPosition = -14:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 40
+    transformPosition = -13:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 41
+    transformPosition = -12:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 42
+    transformPosition = -12:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 43
+    transformPosition = -13:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 44
+    transformPosition = -14:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 45
+    transformPosition = -14:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 46
+    transformPosition = -12:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 47
+    transformPosition = -11:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 48
+    transformPosition = -11:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 49
+    transformPosition = -13:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 50
+    transformPosition = -11:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 51
+    transformPosition = -12:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 52
+    transformPosition = -13:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 53
+    transformPosition = -14:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 54
+    transformPosition = -14:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 55
+    transformPosition = -13:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 56
+    transformPosition = -11:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 57
+    transformPosition = -11:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 58
+    transformPosition = -12:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 59
+    transformPosition = -15:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 60
+    transformPosition = -16:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 61
+    transformPosition = -16:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 62
+    transformPosition = -15:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1530
+    transformPosition = -8:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1532
+    transformPosition = -7:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1533
+    transformPosition = -8:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1534
+    transformPosition = -7:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1535
+    transformPosition = -7:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1536
+    transformPosition = -7:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1537
+    transformPosition = -8:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1538
+    transformPosition = -7:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1539
+    transformPosition = -8:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1540
+    transformPosition = -7:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1541
+    transformPosition = -7:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1542
+    transformPosition = -16:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1543
+    transformPosition = -7:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1544
+    transformPosition = -8:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1545
+    transformPosition = -8:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1546
+    transformPosition = -8:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1547
+    transformPosition = -15:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1548
+    transformPosition = -9:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1549
+    transformPosition = -12:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1551
+    transformPosition = -11:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1552
+    transformPosition = -12:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1553
+    transformPosition = -13:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1554
+    transformPosition = -15:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1555
+    transformPosition = -14:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1556
+    transformPosition = -13:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1557
+    transformPosition = -14:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1558
+    transformPosition = -10:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1559
+    transformPosition = -8:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1561
+    transformPosition = -7:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1562
+    transformPosition = -8:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1563
+    transformPosition = -8:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1564
+    transformPosition = -10:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1565
+    transformPosition = -11:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1566
+    transformPosition = -9:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1567
+    transformPosition = -8:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1568
+    transformPosition = -7:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1569
+    transformPosition = -14:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1570
+    transformPosition = -12:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1571
+    transformPosition = -11:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1572
+    transformPosition = -10:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1573
+    transformPosition = -9:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1574
+    transformPosition = -9:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1575
+    transformPosition = -9:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1576
+    transformPosition = -9:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1577
+    transformPosition = -9:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1578
+    transformPosition = -9:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1579
+    transformPosition = -9:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1580
+    transformPosition = -9:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1581
+    transformPosition = -10:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1582
+    transformPosition = -11:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1583
+    transformPosition = -12:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1584
+    transformPosition = -8:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1585
+    transformPosition = -13:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1586
+    transformPosition = -14:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1587
+    transformPosition = -15:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1588
+    transformPosition = -16:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1589
+    transformPosition = -13:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1590
+    transformPosition = -14:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1591
+    transformPosition = -9:0:8
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1592
+    transformPosition = -13:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1593
+    transformPosition = -15:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1594
+    transformPosition = -10:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1595
+    transformPosition = -11:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1596
+    transformPosition = -12:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1597
+    transformPosition = -12:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1598
+    transformPosition = -14:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1600
+    transformPosition = -16:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1601
+    transformPosition = -15:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1602
+    transformPosition = -11:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1603
+    transformPosition = -16:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1604
+    transformPosition = -13:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1605
+    transformPosition = -14:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1606
+    transformPosition = -10:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1607
+    transformPosition = -15:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 1608
+    transformPosition = -9:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Floor1x1>
+# END - Static
+
+#
+# NonStatic
+#
+  <prefab:AllegianceSwitcher>
+    # Prefab
+    instanceID = 1624
+    transformPosition = -18:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:AllegianceSwitcher>
+  <prefab:Chapel Tracker>
+    # Person
+    # Prefab
+    instanceID = 1611
+    transformPosition = -10:0:11
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Chapel Tracker>
+  <prefab:Chapel Tracker>
+    # Person
+    # Prefab
+    instanceID = 1612
+    transformPosition = -9:0:7
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Chapel Tracker>
+  <prefab:Chapel Tracker>
+    # Person
+    # Prefab
+    instanceID = 1613
+    transformPosition = -9:0:4
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Chapel Tracker>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 20
+    transformPosition = -16:0:7
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 21
+    transformPosition = -16:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1509
+    transformPosition = -13:0:7
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1510
+    transformPosition = -13:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1511
+    transformPosition = -10:0:4
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1512
+    transformPosition = -10:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1513
+    transformPosition = -10:0:6
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1514
+    transformPosition = -10:0:7
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1515
+    transformPosition = -10:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1516
+    transformPosition = -10:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1517
+    transformPosition = -13:0:9
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1518
+    transformPosition = -13:0:10
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1519
+    transformPosition = -13:0:6
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1520
+    transformPosition = -13:0:4
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1644
+    transformPosition = -12:0:12
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1645
+    transformPosition = -11:0:1
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1710
+    transformPosition = -15:0:11
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:Cover>
+    # Prefab
+    instanceID = 1711
+    transformPosition = -15:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+  </prefab:Cover>
+  <prefab:DestroyableObjective>
+    # Prefab
+    instanceID = 1640
+    transformPosition = -8:0:1
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:DestroyableObjective>
+  <prefab:DestroyableObjective>
+    # Prefab
+    instanceID = 1641
+    transformPosition = -9:0:1
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:DestroyableObjective>
+  <prefab:DestroyableObjective>
+    # Prefab
+    instanceID = 1642
+    transformPosition = -15:0:1
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:DestroyableObjective>
+  <prefab:DestroyableObjective>
+    # Prefab
+    instanceID = 1643
+    transformPosition = -8:0:12
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:DestroyableObjective>
+  <prefab:Door>
+    # Prefab
+    instanceID = 1501
+    transformPosition = -17:0:4
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+  </prefab:Door>
+  <prefab:Door>
+    # Prefab
+    instanceID = 1633
+    transformPosition = -17:0:10
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+  </prefab:Door>
+  <prefab:Enemy Door>
+    # Prefab
+    instanceID = 1502
+    transformPosition = -7:0:9
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+    # EnemyDoor
+    spawnQueue[] = Enemy Riot Priest
+    spawnQueue[] = Reactor Protector
+    spawnQueue[] = none
+    totalEnemiesToSpawn = 3
+    totalEnemiesToSpawnInHardMode = -1
+    locked = False
+  </prefab:Enemy Door>
+  <prefab:Enemy Door>
+    # Prefab
+    instanceID = 1503
+    transformPosition = -7:0:4
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+    # EnemyDoor
+    spawnQueue[] = Chapel Tracker
+    spawnQueue[] = Reactor Protector
+    spawnQueue[] = Enemy Riot Priest
+    totalEnemiesToSpawn = 3
+    totalEnemiesToSpawnInHardMode = -1
+    locked = False
+  </prefab:Enemy Door>
+  <prefab:Enemy Door>
+    # Prefab
+    instanceID = 1504
+    transformPosition = -10:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+    # EnemyDoor
+    spawnQueue[] = Reactor Protector
+    spawnQueue[] = Reactive Gunner
+    spawnQueue[] = Enemy Riot Priest
+    totalEnemiesToSpawn = 3
+    totalEnemiesToSpawnInHardMode = -1
+    locked = False
+  </prefab:Enemy Door>
+  <prefab:Enemy Riot Priest>
+    # Person
+    # Prefab
+    instanceID = 1491
+    transformPosition = -10:0:2
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Enemy Riot Priest>
+  <prefab:Enemy Riot Priest>
+    # Person
+    # Prefab
+    instanceID = 1492
+    transformPosition = -10:0:8
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Enemy Riot Priest>
+  <prefab:Heavy Gunner>
+    # Person
+    # Prefab
+    instanceID = 15
+    transformPosition = -14:0:9
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:Heavy Gunner>
+  <prefab:Intel>
+    # Prefab
+    instanceID = 18
+    transformPosition = -16:0:7
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+    # Intel
+    intelModelPosition = -16:0.6:7
+    intelModelRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Intel>
+  <prefab:Intel>
+    # Prefab
+    instanceID = 19
+    transformPosition = -12:0:12
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+    hiddenCoverObjectPosition = 9999:9999:9999
+    used = False
+    # Intel
+    intelModelPosition = -12:0.6:12
+    intelModelRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Intel>
+  <prefab:Melee Wizard>
+    # Person
+    # Wizard
+    # Prefab
+    instanceID = 1505
+    transformPosition = -17:0:9
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Melee Wizard>
+  <prefab:Navy Seer>
+    # Person
+    # Wizard
+    # Prefab
+    instanceID = 1712
+    transformPosition = -17:0:11
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Navy Seer>
+  <prefab:Reactive Gunner>
+    # Person
+    # Prefab
+    instanceID = 1484
+    transformPosition = -9:0:10
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Reactive Gunner>
+  <prefab:Reactor Protector>
+    # Person
+    # Prefab
+    instanceID = 1486
+    transformPosition = -7:0:10
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Reactor Protector>
+  <prefab:Reactor Protector>
+    # Person
+    # Prefab
+    instanceID = 1487
+    transformPosition = -8:0:6
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Reactor Protector>
+  <prefab:Reactor Protector>
+    # Person
+    # Prefab
+    instanceID = 1488
+    transformPosition = -8:0:3
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Reactor Protector>
+  <prefab:Reactor Protector>
+    # Person
+    # Prefab
+    instanceID = 1709
+    transformPosition = -8:0:8
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Reactor Protector>
+  <prefab:Reactor Tracker>
+    # Person
+    # Prefab
+    instanceID = 6
+    transformPosition = -15:0:4
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:Reactor Tracker>
+  <prefab:Riot Priest>
+    # Person
+    # Wizard
+    # Prefab
+    instanceID = 1508
+    transformPosition = -17:0:5
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Riot Priest>
+# END - NonStatic
+

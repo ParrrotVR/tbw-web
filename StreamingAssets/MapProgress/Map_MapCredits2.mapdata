@@ -1,0 +1,155 @@
+# Map_MapCredits2.mapdata
+# 2024-02-08 15:10:20 (-08:00)
+# v:2023-10-18-1-Pavo
+
+<AdviseInKalan>
+  visible = False
+  localPosition = 17.73:-6.38:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</AdviseInKalan>
+<Agency>
+  visible = True
+  localPosition = -4.43:-15.89:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</Agency>
+<DeathInc>
+  visible = True
+  localPosition = 16.82:-20.52:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</DeathInc>
+<Druid>
+  visible = True
+  localPosition = 6.360002:0.440001:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+  DruidConnection0 = 
+  DruidConnection0name = TAKE ON THE CHAPEL connection
+  DruidConnection0labelText = TAKE ON THE CHAPEL
+  DruidConnection0hidden = False
+  DruidConnection0type = MustSet
+  DruidConnection0correctDestinationName = FirstChaplain
+  DruidConnection1 = 
+  DruidConnection1name = DECAPITATE REACTOR connection
+  DruidConnection1labelText = DECAPITATE REACTOR
+  DruidConnection1destinationMapItem = ReactorCEO
+  DruidConnection1hidden = False
+  DruidConnection1type = PreSet
+  DruidConnection1correctDestinationName = ReactorCEO
+</Druid>
+<FirstChaplain>
+  visible = True
+  localPosition = 17.64:0.92:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</FirstChaplain>
+<JenInMedil>
+  visible = False
+  localPosition = 16.82:-13.92:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</JenInMedil>
+<KalanFrontlines>
+  visible = True
+  localPosition = 17.81:8.02:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</KalanFrontlines>
+<KalanLeader>
+  visible = True
+  localPosition = -5.06:10.07:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</KalanLeader>
+<Necro>
+  visible = True
+  localPosition = 5.92:-19.89:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+  NecroConnection0 = 
+  NecroConnection0name = START A BUSINESS connection
+  NecroConnection0labelText = START A BUSINESS
+  NecroConnection0destinationMapItem = DeathInc
+  NecroConnection0hidden = False
+  NecroConnection0type = PreSet
+  NecroConnection0correctDestinationName = DeathInc
+  NecroConnection1 = 
+  NecroConnection1name = JOIN JEN'S AGENCY connection
+  NecroConnection1labelText = JOIN JEN'S AGENCY
+  NecroConnection1hidden = False
+  NecroConnection1type = MustSet
+  NecroConnection1correctDestinationName = Agency
+</Necro>
+<Priest>
+  visible = True
+  localPosition = 6.060003:7.530001:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+  PriestConnection0 = 
+  PriestConnection0name = GET INTO STRATEGY connection
+  PriestConnection0labelText = GET INTO STRATEGY
+  PriestConnection0destinationMapItem = KalanLeader
+  PriestConnection0hidden = False
+  PriestConnection0type = PreSet
+  PriestConnection0correctDestinationName = KalanLeader
+  PriestConnection1 = 
+  PriestConnection1name = LEAD THE CHARGE connection
+  PriestConnection1labelText = LEAD THE CHARGE
+  PriestConnection1hidden = False
+  PriestConnection1type = MustSet
+  PriestConnection1correctDestinationName = KalanFrontlines
+</Priest>
+<ReactorCEO>
+  visible = True
+  localPosition = -5.18:2.59:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+</ReactorCEO>
+<RetireToLiboli>
+  visible = False
+  localPosition = -4.63:-6.21:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</RetireToLiboli>
+<Seer>
+  visible = False
+  localPosition = 6.450002:-6.30999851:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Seer>
+<Witch>
+  visible = True
+  localPosition = 6.020003:-12.8899994:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = True
+  groupName = 
+  WitchConnection0 = 
+  WitchConnection0name = START MY OWN AGENCY connection
+  WitchConnection0labelText = START MY OWN AGENCY
+  WitchConnection0destinationMapItem = Agency
+  WitchConnection0hidden = False
+  WitchConnection0type = PreSet
+  WitchConnection0correctDestinationName = Agency
+  WitchConnection1 = 
+  WitchConnection1name = HELP OUT MEDIL connection
+  WitchConnection1labelText = HELP OUT MEDIL
+  WitchConnection1hidden = False
+  WitchConnection1type = MustSet
+  WitchConnection1correctDestinationName = JenInMedil
+</Witch>
+

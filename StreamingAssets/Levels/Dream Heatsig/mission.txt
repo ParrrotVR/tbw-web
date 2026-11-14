@@ -1,0 +1,13 @@
+# mission.txt
+# 2023-11-24 13:40:01 (+01:00)
+# v:2023-10-18-1-Pavo
+
+<MissionData>
+  backgroundScene = HeatSignature
+  provingGrounds = False
+  hideOtherLevels = False
+  title = Signature Moves
+  description = 
+</MissionData>
+
+

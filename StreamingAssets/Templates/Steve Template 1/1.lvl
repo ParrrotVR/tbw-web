@@ -1,0 +1,489 @@
+# 1.lvl
+# 2021-11-12 16:40:41 (+00:00)
+# v:2021.05.19.01
+
+<LevelHeader>
+  type = Level
+  name = 
+  description = 
+  timestamp = 132812088413258706
+</LevelHeader>
+
+#
+# Configuration
+#
+  <config:InstructionManager>
+    # LevelAndTurnState
+    instructionsCompleted = 0
+    tutorialName = None
+    instructionLevelObjectiveInstructionCompleted = False
+  </config:InstructionManager>
+  <config:LevelManager>
+    # LevelAndTurnState
+    yAngle = 270
+    badgeTimeLimit = 30
+    badgeTurnLimit = 2
+    badgeDefenestrationLimit = 0.5
+    tilesetName = PoliceOfficeTileset
+    initialSelectedWizard = None
+    # ObjectiveList
+    Objective[] = ClearEnemiesObjective
+    # ConfidenceGoalList
+  </config:LevelManager>
+  <config:SpeechManager>
+    # LevelAndTurnState
+  </config:SpeechManager>
+# END - Configuration
+
+#
+# Static
+#
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 4
+    transformPosition = 0:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 5
+    transformPosition = 0:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 43
+    transformPosition = 1:0:-1
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 44
+    transformPosition = 2:0:-1
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 46
+    transformPosition = 6:0:-1
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Dark Floor>
+    # Prefab
+    instanceID = 47
+    transformPosition = 7:0:-1
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Dark Floor>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 8
+    transformPosition = 1:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 9
+    transformPosition = 1:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 10
+    transformPosition = 1:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 11
+    transformPosition = 1:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 12
+    transformPosition = 1:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 13
+    transformPosition = 4:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 14
+    transformPosition = 4:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 15
+    transformPosition = 3:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 16
+    transformPosition = 3:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 17
+    transformPosition = 3:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 18
+    transformPosition = 3:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 19
+    transformPosition = 5:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 21
+    transformPosition = 4:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 22
+    transformPosition = 5:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 23
+    transformPosition = 5:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 24
+    transformPosition = 5:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 25
+    transformPosition = 3:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 26
+    transformPosition = 4:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 29
+    transformPosition = 5:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 32
+    transformPosition = 2:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 34
+    transformPosition = 2:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 35
+    transformPosition = 4:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 49
+    transformPosition = 7:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 50
+    transformPosition = 8:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 51
+    transformPosition = 1:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 52
+    transformPosition = 2:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 53
+    transformPosition = 3:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 54
+    transformPosition = 4:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 55
+    transformPosition = 5:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 56
+    transformPosition = 6:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 57
+    transformPosition = 7:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 58
+    transformPosition = 7:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 59
+    transformPosition = 7:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 60
+    transformPosition = 8:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 61
+    transformPosition = 7:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 62
+    transformPosition = 7:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 63
+    transformPosition = 6:0:1
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 64
+    transformPosition = 8:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 65
+    transformPosition = 2:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 66
+    transformPosition = 6:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 67
+    transformPosition = 6:0:5
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 74
+    transformPosition = 6:0:4
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 75
+    transformPosition = 2:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 82
+    transformPosition = 7:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 83
+    transformPosition = 6:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 84
+    transformPosition = 5:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 85
+    transformPosition = 4:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 86
+    transformPosition = 3:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 87
+    transformPosition = 2:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 88
+    transformPosition = 1:0:6
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 89
+    transformPosition = 8:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 94
+    transformPosition = 9:0:0
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 95
+    transformPosition = 9:0:1
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 96
+    transformPosition = 9:0:3
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Floor1x1>
+    # Prefab
+    instanceID = 97
+    transformPosition = 9:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Floor1x1>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 76
+    transformPosition = 3:0:4
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 77
+    transformPosition = 2:0:4
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 78
+    transformPosition = 2:0:5
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 79
+    transformPosition = 2:0:4
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 90
+    transformPosition = 6:0:2
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 91
+    transformPosition = 6:0:2
+    transformRotation = -0.7071068:0:0.7071068:0 #(0.0, 270.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 92
+    transformPosition = 6:0:2
+    transformRotation = 1:0:0:0 #(0.0, 0.0, 0.0)
+  </prefab:Low Wall>
+  <prefab:Low Wall>
+    # Prefab
+    instanceID = 93
+    transformPosition = 6:0:2
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:Low Wall>
+# END - Static
+
+#
+# NonStatic
+#
+  <prefab:Door>
+    # Prefab
+    instanceID = 36
+    transformPosition = 2:0:0
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    used = False
+  </prefab:Door>
+  <prefab:Door>
+    # Prefab
+    instanceID = 37
+    transformPosition = 0:0:3
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+    used = False
+  </prefab:Door>
+  <prefab:Door>
+    # Prefab
+    instanceID = 38
+    transformPosition = 7:0:0
+    transformRotation = -4.371139E-08:0:1:0 #(0.0, 180.0, 0.0)
+    used = False
+  </prefab:Door>
+  <prefab:Necromedic>
+    # Person
+    # Prefab
+    instanceID = 98
+    transformPosition = 1:0:-1
+    transformRotation = 0.7071068:0:0.7071068:0 #(0.0, 90.0, 0.0)
+  </prefab:Necromedic>
+# END - NonStatic
+

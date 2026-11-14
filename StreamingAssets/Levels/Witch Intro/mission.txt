@@ -1,0 +1,11 @@
+# mission.txt
+# 2022-02-16 11:37:50 (-08:00)
+# v:2021.05.19.01
+
+<MissionData>
+  backgroundScene = Police
+  missionRegion = DSR
+  provingGrounds = False
+</MissionData>
+
+

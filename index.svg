@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <title>Harbor</title>
+  <foreignObject width="100%" height="100%">
+    <div xmlns="http://www.w3.org/1999/xhtml" style="background:#16191d;color:#eef0f3;position:relative;width:100%;height:100vh;font:16px system-ui;box-sizing:border-box">
+      <section id="launcher-panel" style="padding:20px;box-sizing:border-box"><p id="status" role="status">Opening Harbor…</p><progress id="startup-progress" max="3" value="0" style="width:min(420px,90%);height:20px" aria-label="Game startup"></progress><p style="font-size:14px">Browser and games. Open directly in Safari.</p></section>
+      <iframe id="game-frame" title="Harbor browser and games" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen="true" style="display:block;visibility:hidden;position:absolute;inset:0;width:100%;height:100%;border:0;background:#16191d"></iframe>
+    </div>
+  </foreignObject>
+  <script><![CDATA[
+self.TBWSplitConfig = {"revision":"2648b3f4de6c5ebd514e2e9daa19215b","assetBase":"https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@6615e9648f11c732e81924ff379b97c8fafd6a3c/","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json","harbor/browser.html","harbor/browser.css","harbor/portal.css","harbor/portal.mjs","harbor/browser.mjs","harbor/relay-settings.mjs","harbor/http-client.mjs","harbor/socket-client.mjs","harbor/navigation.mjs","harbor/browser-plugin.mjs","harbor/asset-cache.mjs","harbor/content-filter.mjs","harbor/stream-bridge.js","harbor/icons.svg","harbor/icon.svg","harbor/wizard.svg"],"portalPage":"harbor/browser.html"};
+self.TBWSplitLauncher = true;
+(function (root) {
+  "use strict";
+  var config = root.TBWSplitConfig;
+  var launcher = root.TBWSplitLauncher === true;
+  function progress(step, message) {
+    var label = document.getElementById("status");
+    var bar = document.getElementById("startup-progress");
+    if (label) { label.hidden = false; label.textContent = message; }
+    if (bar) bar.value = step;
+  }
+  function deadline(promise, milliseconds, message) {
+    return new Promise(function (resolve, reject) {
+      var timer = setTimeout(function () { reject(new Error(message)); }, milliseconds);
+      Promise.resolve(promise).then(function (value) { clearTimeout(timer); resolve(value); }, function (error) { clearTimeout(timer); reject(error); });
+    });
+  }
+  root.TBWSplitReady = (async function () {
+    progress(0, "Step 1 of 3: connecting the download worker…");
+    if (!config || !config.revision) throw new Error("The split-file configuration is missing.");
+    if (!root.isSecureContext || !navigator.serviceWorker)
+      throw new Error("Split downloads need HTTPS and a browser that supports service workers. Open this link directly in Safari.");
+    if (!root.ReadableStream || !root.crypto || !root.crypto.subtle)
+      throw new Error("This browser does not support verified split downloads.");
+    var workerURL = new URL("sw.js", document.baseURI).href;
+    var registration = await deadline(navigator.serviceWorker.register(workerURL, { updateViaCache: "none" }), 30000,
+      "The browser did not finish registering the download worker. Open the link directly in Safari and reload.");
+    progress(1, "Step 2 of 3: preparing the browser…");
+    var worker = await new Promise(function (resolve, reject) {
+      var finished = false;
+      var watched = [];
+      var candidate = registration.installing || registration.waiting || registration.active;
+      var timer = setTimeout(function () { finish(new Error("The download worker did not activate. Reload to try again.")); }, 45000);
+      function finish(error, ready) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timer);
+        registration.removeEventListener("updatefound", watch);
+        watched.forEach(function (item) { item.removeEventListener("statechange", check); });
+        if (error) reject(error); else resolve(ready);
+      }
+      function check() {
+        if (!candidate) return;
+        if (candidate.state === "redundant") finish(new Error("The download worker failed to install. Reload to retry the page files."));
+        else if (candidate.state === "activated") finish(null, candidate);
+      }
+      function watch() {
+        candidate = registration.installing || registration.waiting || registration.active || candidate;
+        if (candidate && watched.indexOf(candidate) < 0) {
+          watched.push(candidate);
+          candidate.addEventListener("statechange", check);
+        }
+        check();
+      }
+      registration.addEventListener("updatefound", watch);
+      watch();
+    });
+    if (!launcher && (!navigator.serviceWorker.controller || navigator.serviceWorker.controller.scriptURL !== workerURL)) {
+      await new Promise(function (resolve, reject) {
+        var timer = setTimeout(function () { finish(new Error("The worker is ready, but the browser did not attach it to the game page. Reload this page.")); }, 15000);
+        function finish(error) {
+          clearTimeout(timer);
+          navigator.serviceWorker.removeEventListener("controllerchange", check);
+          if (error) reject(error); else resolve();
+        }
+        function check() {
+          var current = navigator.serviceWorker.controller;
+          if (current && current.scriptURL === workerURL) finish();
+        }
+        navigator.serviceWorker.addEventListener("controllerchange", check);
+        check();
+      });
+    }
+    progress(2, "Step 3 of 3: checking offline files…");
+    await new Promise(function (resolve, reject) {
+      var channel = new MessageChannel();
+      var timer = setTimeout(function () {
+        channel.port1.close();
+        reject(new Error("The download worker did not answer. Reload to try again."));
+      }, 15000);
+      channel.port1.onmessage = function (event) {
+        clearTimeout(timer);
+        channel.port1.close();
+        if (event.data && event.data.revision === config.revision) resolve();
+        else reject(new Error(event.data && event.data.error || "The site has mixed game versions. Open the latest game link."));
+      };
+      worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
+    });
+    root.TBWSplitWorker = worker;
+    progress(3, launcher ? "Opening Harbor…" : "Starting the game…");
+  })().catch(function (error) {
+    var label = document.getElementById("status");
+    if (label) {
+      label.hidden = false;
+      label.setAttribute("role", "alert");
+      label.textContent = "Unable to open Harbor. " + error.message;
+    }
+    var bar = document.getElementById("startup-progress");
+    if (bar) bar.hidden = true;
+    throw error;
+  });
+})(window);
+
+(function () {
+  "use strict";
+  var frame = document.getElementById("game-frame");
+  var panel = document.getElementById("launcher-panel");
+  var label = document.getElementById("status");
+  var pageURL = new URL(TBWSplitConfig.portalPage || "index.html", document.baseURI);
+  pageURL.search = location.search;
+  pageURL.hash = location.hash;
+  var fallbackStarted = false, opening = false, displayed = false, pageTimer;
+  function fail(error) {
+    clearTimeout(pageTimer);
+    label.setAttribute("role", "alert");
+    label.textContent = "Unable to open Harbor. " + (error.message || error);
+    var progress = document.getElementById("startup-progress");
+    if (progress) progress.hidden = true;
+  }
+  function showGame() {
+    if (displayed) return;
+    displayed = true;
+    clearTimeout(pageTimer);
+    panel.style.display = "none";
+    frame.style.display = "block";
+    frame.style.visibility = "visible";
+    try { frame.contentWindow.focus(); } catch (_) {}
+  }
+  function claimFrame() {
+    return new Promise(function (resolve, reject) {
+      var channel = new MessageChannel();
+      var timer = setTimeout(function () { channel.port1.close(); reject(new Error("The browser did not attach the download worker to the game frame.")); }, 15000);
+      channel.port1.onmessage = function (event) {
+        clearTimeout(timer);
+        channel.port1.close();
+        if (event.data && event.data.revision === TBWSplitConfig.revision) resolve();
+        else reject(new Error(event.data && event.data.error || "The game worker has a different version."));
+      };
+      var worker = window.TBWSplitWorker || navigator.serviceWorker.controller;
+      if (!worker) { clearTimeout(timer); channel.port1.close(); reject(new Error("The download worker is unavailable.")); return; }
+      worker.postMessage({ type: "TBW_SPLIT_CLAIM" }, [channel.port2]);
+    });
+  }
+  async function renderHTML() {
+    if (fallbackStarted || displayed) return;
+    fallbackStarted = true;
+    label.textContent = "Rendering the game page…";
+    await claimFrame();
+    var childNavigator = frame.contentWindow.navigator;
+    var workerURL = new URL("sw.js", document.baseURI).href;
+    if (!childNavigator.serviceWorker.controller || childNavigator.serviceWorker.controller.scriptURL !== workerURL) {
+      await new Promise(function (resolve, reject) {
+        var timer = setTimeout(function () { finish(new Error("The browser could not attach the worker. Reopen this SVG link directly in Safari.")); }, 15000);
+        function finish(error) {
+          clearTimeout(timer);
+          childNavigator.serviceWorker.removeEventListener("controllerchange", check);
+          if (error) reject(error); else resolve();
+        }
+        function check() {
+          var worker = childNavigator.serviceWorker.controller;
+          if (worker && worker.scriptURL === workerURL) finish();
+        }
+        childNavigator.serviceWorker.addEventListener("controllerchange", check);
+        check();
+      });
+    }
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 30000);
+    var html;
+    try {
+      var response = await fetch(pageURL.href, { signal: controller.signal });
+      if (!response.ok) throw new Error("The game page request failed (HTTP " + response.status + ").");
+      html = await response.text();
+    } finally { clearTimeout(timer); }
+    if (!/<div\s[^>]*id=["'](?:unityContainer|harbor-app)["']/i.test(html)) throw new Error("The downloaded page is incomplete.");
+    var base = new URL("./", pageURL).href.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+    html = html.replace(/<head(?:\s[^>]*)?>/i, function (head) { return head + '<base href="' + base + '">'; });
+    var documentInFrame = frame.contentDocument;
+    documentInFrame.open();
+    documentInFrame.write(html);
+    documentInFrame.close();
+    showGame();
+  }
+  frame.addEventListener("load", function () {
+    if (!opening || displayed) return;
+    try {
+      var documentInFrame = frame.contentDocument;
+      if (documentInFrame && (documentInFrame.getElementById("unityContainer") || documentInFrame.getElementById("harbor-app"))) { showGame(); return; }
+      if (!documentInFrame || frame.contentWindow.location.href === "about:blank") return;
+      renderHTML().catch(fail);
+    } catch (error) { fail(error); }
+  });
+  TBWSplitReady.then(function () {
+    label.textContent = "Opening the game page…";
+    opening = true;
+    pageTimer = setTimeout(function () {
+      try {
+        if (frame.contentDocument && (frame.contentDocument.getElementById("unityContainer") || frame.contentDocument.getElementById("harbor-app"))) showGame();
+        else if (!fallbackStarted) renderHTML().catch(fail);
+        else fail(new Error("The game page did not finish opening. Reload this SVG link."));
+      } catch (error) { fail(error); }
+    }, 45000);
+    frame.src = pageURL.href;
+  }).catch(function () {});
+})();
+  ]]></script>
+</svg>

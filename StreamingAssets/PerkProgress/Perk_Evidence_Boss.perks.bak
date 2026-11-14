@@ -1,0 +1,22 @@
+# Perk_Evidence_Boss.perks
+# 2024-06-11 13:35:14 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 1
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = SupportingFire
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 1
+  NavySeerTotalPerkPoints = 1
+</PerkManager>
+

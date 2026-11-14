@@ -1,0 +1,13 @@
+# mission.txt
+# 2022-06-09 12:05:43 (+01:00)
+# v:2022-06-07-1-Quigley
+
+<MissionData>
+  backgroundScene = Blacksite Night
+  missionRegion = Liboli
+  provingGrounds = False
+  title = 
+  description = 
+</MissionData>
+
+

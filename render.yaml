@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: harbor-relay
+    runtime: docker
+    plan: free
+    rootDir: relay
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: HARBOR_CLIENT_ORIGINS
+        value: https://cdn.jsdelivr.net
+      - key: HARBOR_ACCESS_KEY
+        generateValue: true

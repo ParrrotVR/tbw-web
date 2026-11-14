@@ -1,0 +1,13 @@
+# mission.txt
+# 2022-03-18 16:15:47 (-07:00)
+# v:2021.05.19.01
+
+<MissionData>
+  backgroundScene = Construction
+  missionRegion = DSR
+  provingGrounds = False
+  title = Tower of Turrets
+  description = 
+</MissionData>
+
+

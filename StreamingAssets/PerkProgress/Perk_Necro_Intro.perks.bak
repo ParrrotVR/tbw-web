@@ -1,0 +1,29 @@
+# Perk_Necro_Intro.perks
+# 2024-06-11 13:40:16 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 3
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = SedativeGrenadePotency
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 2
+  NavySeerTotalPerkPoints = 2
+  NecroMedicTotalPerkPoints = 1
+</PerkManager>
+

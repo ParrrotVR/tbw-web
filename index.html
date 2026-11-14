@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tactical Breach Wizards</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Breach Wizards">
+    <meta name="theme-color" content="#16191d">
+    <style>
+      html, body { margin: 0; min-height: 100%; background: #16191d; color: #eef0f3; font: 16px system-ui, sans-serif; }
+      body { display: flex; flex-direction: column; align-items: center; padding: 24px 0; box-sizing: border-box; }
+      #unityContainer { width: min(960px, 100vw); height: min(600px, 62.5vw); background: #231f20; }
+      #unityContainer canvas { width: 100% !important; height: 100% !important; display: block; image-rendering: auto !important; touch-action: none; -webkit-user-select: none; }
+      #mobile-controls { width: min(1280px, 96vw); font-size: 13px; padding: 6px 0; line-height: 1.4; }
+      #mobile-controls button { min-height: 44px; }
+      #status, #scene-status { max-width: 880px; padding: 16px 24px; line-height: 1.5; overflow-wrap: anywhere; }
+      #status[role="alert"] { color: #ffcbba; }
+      #scene-status[role="alert"] { color: #ffcbba; }
+      #scene-status[hidden] { display: none; }
+      #offline { width: min(920px, 94vw); font-size: 13px; line-height: 1.4; }
+      button { color: #eef0f3; background: #303a44; border: 1px solid #667482; border-radius: 4px; padding: 10px; cursor: pointer; }
+      button:disabled { opacity: .6; cursor: default; }
+      @media (pointer: coarse) {
+        body { padding: 4px 0; }
+        #unityContainer { width: min(960px, 100vw, calc((100svh - 110px) * 1.6)); height: auto; aspect-ratio: 1.6; }
+      }
+      #game-shell { display: flex; flex-direction: column; align-items: center; width: 100%; }
+      #game-toolbar { max-width: 1280px; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 5px; padding: 5px; font-size: 13px; }
+      #game-toolbar button { min-height: 44px; }
+      #mobile-controls { width: auto; display: inline-flex; align-items: center; gap: 4px; padding: 0; }
+      #mobile-controls span { display: none; }
+      #save-status { max-width: 300px; }
+      #save-status[role="alert"] { color: #ffcbba; }
+      #save-options { width: min(920px, 94vw); font-size: 14px; margin-top: 8px; }
+      body.large-view { overflow: hidden; }
+      body.large-view #game-shell { position: fixed; inset: 0; height: 100%; background: #16191d; z-index: 10000; justify-content: center; }
+      body.large-view #offline, body.large-view #save-options { display: none; }
+      #game-shell:fullscreen { height: 100%; background: #16191d; justify-content: center; }
+      #game-shell:-webkit-full-screen { height: 100%; background: #16191d; justify-content: center; }
+    </style>
+  </head>
+  <body>
+    <div id="game-shell">
+    <div id="unityContainer" aria-label="Tactical Breach Wizards game"></div>
+    <div id="status" role="status" aria-live="polite">Loading game…</div>
+    <div id="scene-status" role="status" aria-live="polite" hidden></div>
+    <div id="game-toolbar"><button id="fullscreen" type="button">Fullscreen</button><button id="large-view" type="button">Large view</button><button id="save-now" type="button" disabled>Save progress</button><span id="save-status" role="status" aria-live="polite">Loading saved progress…</span></div>
+    </div>
+    <details id="save-options"><summary>Save backups &amp; display tips</summary><p>Progress stays in this browser at this site address. Download a backup before changing devices or site addresses. The game keeps its existing checkpoint and turn autosaves.</p><button id="save-download" type="button" disabled>Download save backup</button><button id="save-restore" type="button" disabled>Restore save backup</button><input id="save-file" type="file" accept="application/json,.json" hidden><p>Use landscape orientation for larger text. You can also use Safari’s Share → Add to Home Screen.</p></details>
+    <div id="offline"><button id="offline-download" type="button" disabled>Download full game for offline play</button><p id="offline-status" role="status" aria-live="polite">Preparing offline storage…</p></div>
+    <noscript>This game needs JavaScript enabled.</noscript>
+    <script src="split-config.js"></script>
+    <script src="split-loader.js"></script>
+    <script src="offline-ui.js"></script>
+    <script src="Build/UnityLoader.js" onerror="document.getElementById('status').textContent='Unable to download the game loader. Reload the page.';"></script>
+    <script src="loader-fixes.js" onerror="document.getElementById('status').textContent='Unable to download the startup helper. Reload the page.';"></script>
+    <script src="save-support.js"></script>
+    <script src="mobile-support.js"></script>
+    <script src="view-support.js"></script>
+    <script>
+      if (window.TBWWebGL) TBWWebGL.start("unityContainer", "Build/web-ipad-compact.json");
+    </script>
+  </body>
+</html>

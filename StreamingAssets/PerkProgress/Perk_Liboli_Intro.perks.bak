@@ -1,0 +1,25 @@
+# Perk_Liboli_Intro.perks
+# 2024-06-11 13:38:09 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 2
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = FalseProphetAttack
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 2
+  NavySeerTotalPerkPoints = 2
+</PerkManager>
+

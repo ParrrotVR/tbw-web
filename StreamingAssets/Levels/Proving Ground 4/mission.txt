@@ -1,0 +1,14 @@
+# mission.txt
+# 2023-09-19 12:19:06 (+01:00)
+# v:2023-09-15-1-Ottilia
+
+<MissionData>
+  backgroundScene = Alpine
+  missionRegion = DSR
+  provingGrounds = True
+  hideOtherLevels = False
+  title = Medil Proving Ground
+  description = 
+</MissionData>
+
+

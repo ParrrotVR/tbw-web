@@ -1,0 +1,19 @@
+# Perk_Witch_Intro.perks
+# 2024-07-16 15:37:26 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 0
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = WitchBoltMelee
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  WitchCopTotalPerkPoints = 1
+  NavySeerTotalPerkPoints = 0
+</PerkManager>
+

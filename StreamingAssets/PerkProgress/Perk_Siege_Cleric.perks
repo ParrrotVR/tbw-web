@@ -1,0 +1,46 @@
+# Perk_Siege_Cleric.perks
+# 2024-07-16 15:47:00 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 8
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = DartGasmask
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 2
+  WitchCopTotalPerkPoints = 4
+  NavySeerTotalPerkPoints = 5
+  NecroMedicTotalPerkPoints = 3
+  DruidTotalPerkPoints = 1
+</PerkManager>
+

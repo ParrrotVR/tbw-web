@@ -1,0 +1,12 @@
+# mission.txt
+# 2022-05-05 09:09:54 (-07:00)
+# v:2022-05-03-1-Columba
+
+<MissionData>
+  backgroundScene = Construction
+  provingGrounds = False
+  title = 
+  description = 
+</MissionData>
+
+

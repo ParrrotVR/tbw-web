@@ -1,0 +1,39 @@
+# Perk_Streets.perks
+# 2024-07-16 15:44:40 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 6
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = ChargeExtraKnockback
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 1
+  WitchCopTotalPerkPoints = 3
+  NavySeerTotalPerkPoints = 4
+  NecroMedicTotalPerkPoints = 2
+</PerkManager>
+

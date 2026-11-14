@@ -1,0 +1,11 @@
+# mission.txt
+# 2022-02-16 11:38:52 (-08:00)
+# v:2021.05.19.01
+
+<MissionData>
+  backgroundScene = Blacksite
+  missionRegion = Liboli
+  provingGrounds = False
+</MissionData>
+
+

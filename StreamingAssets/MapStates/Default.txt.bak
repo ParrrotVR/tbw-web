@@ -1,0 +1,61 @@
+<Liv Kennedy>
+  mapPosition = -9.871258:5.579194:0
+  localScale = 0.018992573:0.018992573:0.40726
+  Liv KennedyConnection0 = 
+  Liv KennedyConnection0name = ABDUCTED connection
+  Liv KennedyConnection0labelText = ABDUCTED
+  Liv KennedyConnection0type = MustSet
+  Liv KennedyConnection0correctDestinationName = Necromedic
+  Liv KennedyConnection1 = 
+  Liv KennedyConnection1name = LED STRIKE connection
+  Liv KennedyConnection1labelText = LED STRIKE
+  Liv KennedyConnection1type = MustSet
+  Liv KennedyConnection1correctDestinationName = Strike on PD
+</Liv Kennedy>
+<Navy Seer>
+  mapPosition = 19.03043:24.8766251:0
+  localScale = 0.0227247719:0.0227247719:0.48729
+  Navy SeerConnection0 = 
+  Navy SeerConnection0name = old friends connection
+  Navy SeerConnection0labelText = OLD FRIENDS
+  Navy SeerConnection0type = MustSet
+  Navy SeerConnection0correctDestinationName = Witch Cop
+  Navy SeerConnection1 = 
+  Navy SeerConnection1name = served under connection
+  Navy SeerConnection1labelText = SERVED UNDER
+  Navy SeerConnection1type = MustSet
+  Navy SeerConnection1correctDestinationName = Liv Kennedy
+  Navy SeerConnection2 = 
+  Navy SeerConnection2name = arrested at connection
+  Navy SeerConnection2labelText = ARRESTED AT
+  Navy SeerConnection2type = MustSet
+  Navy SeerConnection2correctDestinationName = Strike on PD
+</Navy Seer>
+<Reactor>
+  mapPosition = -8.782017:27.34982:0
+  localScale = 0.0164234489:0.0164234489:0.35217
+  ReactorConnection0 = 
+  ReactorConnection0name = employs connection
+  ReactorConnection0labelText = EMPLOYS
+  ReactorConnection0type = MustSet
+  ReactorConnection0correctDestinationName = Liv Kennedy
+  ReactorConnection1 = 
+  ReactorConnection1name = ordered strike connection
+  ReactorConnection1labelText = ORDERED STRIKE
+  ReactorConnection1type = MustSet
+  ReactorConnection1correctDestinationName = Strike on PD
+  ReactorConnection2 = 
+  ReactorConnection2name = hates connection
+  ReactorConnection2labelText = HATES
+  ReactorConnection2type = CanSet
+  ReactorConnection2correctDestinationName = 
+</Reactor>
+<Strike on PD>
+  mapPosition = -49.8638649:4.90006:0
+  localScale = 0.0133739868:0.0133739868:0.28678
+</Strike on PD>
+<Witch Cop>
+  mapPosition = 43.2849274:25.9776:0
+  localScale = 0.021851765:0.021851765:0.46857
+</Witch Cop>
+

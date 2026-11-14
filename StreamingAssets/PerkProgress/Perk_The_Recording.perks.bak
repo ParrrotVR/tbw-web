@@ -1,0 +1,42 @@
+# Perk_The_Recording.perks
+# 2024-06-11 13:45:55 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 7
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = PredictiveShotRefresh
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = BroomPush
+  acquiredPerk[] = DeathsDoorRange
+  acquiredPerk[] = SwapIsFreeOnFriends
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 1
+  WitchCopTotalPerkPoints = 4
+  NavySeerTotalPerkPoints = 4
+  NecroMedicTotalPerkPoints = 4
+</PerkManager>
+

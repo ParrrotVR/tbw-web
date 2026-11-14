@@ -1,0 +1,51 @@
+# Perk_Kalan_Ambush_2.perks
+# 2024-06-11 13:49:35 (-07:00)
+# v:2024-05-23-1-Tangelo
+
+<PerkManager>
+  respecPoints = 9
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = PredictiveShotRefresh
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = BroomPush
+  acquiredPerk[] = DeathsDoorRange
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = ChargeRampage
+  acquiredPerk[] = DartGasmask
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = BiteSedative
+  acquiredPerk[] = TransferenceUnsteady
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 3
+  WitchCopTotalPerkPoints = 5
+  NavySeerTotalPerkPoints = 5
+  NecroMedicTotalPerkPoints = 5
+  DruidTotalPerkPoints = 2
+</PerkManager>
+

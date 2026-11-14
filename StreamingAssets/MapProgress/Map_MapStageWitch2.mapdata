@@ -1,0 +1,292 @@
+# Map_MapStageWitch2.mapdata
+# 2024-08-17 12:05:01 (-07:00)
+# v:2024-08-07-1-Guava
+
+<Bar>
+  visible = False
+  localPosition = -31.84:18.41:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Bar>
+<Blacksite>
+  visible = True
+  localPosition = -30.03:20.81:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Blacksite>
+<Chapel>
+  visible = False
+  localPosition = 15.71:0.97:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Chapel>
+<CivilTongue>
+  visible = False
+  localPosition = 20.54:6.73:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</CivilTongue>
+<ClosedFist>
+  visible = False
+  localPosition = 22.03:14.62:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</ClosedFist>
+<Druid>
+  visible = False
+  localPosition = -2.8:11.15:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Druid>
+<EnemyTeam>
+  visible = False
+  localPosition = 4.17:5.26:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</EnemyTeam>
+<FortOsprey>
+  visible = False
+  localPosition = 34.69:-12.28:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</FortOsprey>
+<Kalan>
+  visible = False
+  localPosition = 18.12:17.2:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Kalan>
+<Liv>
+  visible = True
+  localPosition = -8.6612:-13.6292:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  LivConnection0 = 
+  LivConnection0name = LED STRIKE ON connection
+  LivConnection0labelText = LED STRIKE ON
+  LivConnection0destinationMapItem = Rushwater
+  LivConnection0hidden = False
+  LivConnection0type = PreSet
+  LivConnection0correctDestinationName = Rushwater
+  LivConnection1 = 
+  LivConnection1name = ABDUCTED connection
+  LivConnection1labelText = ABDUCTED
+  LivConnection1destinationMapItem = Necro
+  LivConnection1hidden = False
+  LivConnection1type = PreSet
+  LivConnection1correctDestinationName = Necro
+</Liv>
+<Mana>
+  visible = True
+  localPosition = -7.31:5.901:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  ManaConnection0 = 
+  ManaConnection0name = STORED AT connection
+  ManaConnection0labelText = STORED AT
+  ManaConnection0destinationMapItem = Stonecliff
+  ManaConnection0hidden = False
+  ManaConnection0type = PreSet
+  ManaConnection0correctDestinationName = Stonecliff
+</Mana>
+<ManaMines>
+  visible = False
+  localPosition = 35.79:-19.6:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</ManaMines>
+<ManaOre>
+  visible = False
+  localPosition = 22.84:-17.25:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</ManaOre>
+<Mas>
+  visible = True
+  localPosition = -18.64:-1.2102:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Mas>
+<Medil>
+  visible = False
+  localPosition = 31.29:-7.37:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Medil>
+<MedilDefenses>
+  visible = False
+  localPosition = 42.22:-12.56:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</MedilDefenses>
+<Militia>
+  visible = False
+  localPosition = 28.88:-21.13:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Militia>
+<Necro>
+  visible = True
+  localPosition = -32.75:-7.03:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  NecroConnection0 = 
+  NecroConnection0name = TAKEN TO connection
+  NecroConnection0labelText = TAKEN TO
+  NecroConnection0destinationMapItem = Blacksite
+  NecroConnection0hidden = False
+  NecroConnection0type = PreSet
+  NecroConnection0correctDestinationName = Blacksite
+</Necro>
+<OurTeam>
+  visible = False
+  localPosition = -28.93:7.81:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</OurTeam>
+<Priest>
+  visible = False
+  localPosition = 5.13:17.91:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Priest>
+<Pyro>
+  visible = True
+  localPosition = 0.24:-10.1954:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  PyroConnection0 = 
+  PyroConnection0name = TAKES ORDERS FROM connection
+  PyroConnection0labelText = TAKES ORDERS FROM
+  PyroConnection0destinationMapItem = Liv
+  PyroConnection0hidden = False
+  PyroConnection0type = PreSet
+  PyroConnection0correctDestinationName = Liv
+  PyroConnection1 = 
+  PyroConnection1name = BURNED connection
+  PyroConnection1labelText = BURNED
+  PyroConnection1destinationMapItem = Mana
+  PyroConnection1hidden = False
+  PyroConnection1type = PreSet
+  PyroConnection1correctDestinationName = Mana
+</Pyro>
+<Reactor>
+  visible = True
+  localPosition = -8.85:-5.15:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  ReactorConnection0 = 
+  ReactorConnection0name = EMPLOYS connection
+  ReactorConnection0labelText = EMPLOYS
+  ReactorConnection0destinationMapItem = Liv
+  ReactorConnection0hidden = False
+  ReactorConnection0type = PreSet
+  ReactorConnection0correctDestinationName = Liv
+</Reactor>
+<RebelHideout>
+  visible = False
+  localPosition = 16.61:10.86:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</RebelHideout>
+<Recording>
+  visible = False
+  localPosition = 32.7:10.4:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Recording>
+<Rushwater>
+  visible = True
+  localPosition = -20.33:-6.16:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Rushwater>
+<Seer>
+  visible = True
+  localPosition = -15.97:-20.14:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  SeerConnection0 = 
+  SeerConnection0name = SERVED UNDER connection
+  SeerConnection0labelText = SERVED UNDER
+  SeerConnection0destinationMapItem = Liv
+  SeerConnection0hidden = False
+  SeerConnection0type = PreSet
+  SeerConnection0correctDestinationName = Liv
+</Seer>
+<Sickness>
+  visible = False
+  localPosition = -14.53:10.6:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Sickness>
+<Stonecliff>
+  visible = True
+  localPosition = -15.21:0.97:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</Stonecliff>
+<VillaMedil>
+  visible = False
+  localPosition = 36.19:-16.09:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+</VillaMedil>
+<Warlock>
+  visible = True
+  localPosition = 1.4305E-06:-17.942:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  WarlockConnection0 = 
+  WarlockConnection0name = TAKES ORDERS FROM connection
+  WarlockConnection0labelText = TAKES ORDERS FROM
+  WarlockConnection0destinationMapItem = Liv
+  WarlockConnection0hidden = False
+  WarlockConnection0type = PreSet
+  WarlockConnection0correctDestinationName = Liv
+</Warlock>
+<Witch>
+  visible = True
+  localPosition = -27.4000015:-20.0899963:0
+  localScale = 0.0066:0.0066:0.0066
+  detailsRead = False
+  groupName = 
+  WitchConnection0 = 
+  WitchConnection0name = OLD FRIENDS connection
+  WitchConnection0labelText = OLD FRIENDS
+  WitchConnection0destinationMapItem = Seer
+  WitchConnection0hidden = False
+  WitchConnection0type = PreSet
+  WitchConnection0correctDestinationName = Seer
+</Witch>
+

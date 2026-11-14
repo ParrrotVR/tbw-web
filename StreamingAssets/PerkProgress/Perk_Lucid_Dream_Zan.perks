@@ -1,0 +1,67 @@
+# Perk_Lucid_Dream_Zan.perks
+# 2024-07-16 16:00:29 (-07:00)
+# v:2024-07-12-1-Loganberry
+
+<PerkManager>
+  respecPoints = 13
+  # Perks
+  acquiredPerk[] = UnlockChainShock
+  acquiredPerk[] = seerOverwatch
+  acquiredPerk[] = DeathsDoorRange
+  acquiredPerk[] = UnlockGaleGrenade
+  acquiredPerk[] = UnlockTimeBoost
+  acquiredPerk[] = ChargeRampage
+  acquiredPerk[] = UnlockFalseProphet
+  acquiredPerk[] = ArcaneBurstDamage
+  acquiredPerk[] = PullBrittle
+  acquiredPerk[] = UnlockBroomBreach
+  acquiredPerk[] = CenserSlamDamage
+  acquiredPerk[] = UnlockGhostShot
+  acquiredPerk[] = UnlockTransference
+  acquiredPerk[] = GhostSkullDamage
+  acquiredPerk[] = SedativeGrenadePotency
+  acquiredPerk[] = ChainShockTargets
+  acquiredPerk[] = ChainShockSuperchain
+  acquiredPerk[] = DeathsDoorUses
+  acquiredPerk[] = SedativeGrenadeShards
+  acquiredPerk[] = SupportingFire
+  acquiredPerk[] = WitchBoltMelee
+  acquiredPerk[] = FalseProphetInteract
+  acquiredPerk[] = GaleGrenadeUses
+  acquiredPerk[] = FalseProphetAttack
+  acquiredPerk[] = DeathsFloor
+  acquiredPerk[] = WitchShotGrantsMove
+  acquiredPerk[] = PredictiveShotDamage
+  acquiredPerk[] = ChargeExtraKnockback
+  acquiredPerk[] = UnlockCrowdGrenade
+  acquiredPerk[] = UnlockDeathsFloor
+  acquiredPerk[] = InfiniteSupportingFire
+  acquiredPerk[] = SwapIsFreeOnFriends
+  acquiredPerk[] = SwapWithoutLOS
+  acquiredPerk[] = DartGasmask
+  acquiredPerk[] = GaleSecondWind
+  acquiredPerk[] = SporeUses
+  acquiredPerk[] = SporeIntelligent
+  acquiredPerk[] = ChargeRampageInfinite
+  acquiredPerk[] = SporeKnockback
+  acquiredPerk[] = SeerFinaleKnockBackDummy
+  acquiredPerk[] = PredictiveShotRefresh
+  acquiredPerk[] = GaleStorm
+  acquiredPerk[] = GhostSkullDizzy
+  acquiredPerk[] = ChargeSelective
+  acquiredPerk[] = PullFriends
+  # Temporary Perks (Used when replaying missions)
+  # Available Perk Points
+  RiotPriestPerkPoints = 0
+  WitchCopPerkPoints = 0
+  NavySeerPerkPoints = 0
+  NecroMedicPerkPoints = 0
+  DruidPerkPoints = 0
+  # Total Perk Points (Additive for entire campaign)
+  RiotPriestTotalPerkPoints = 6
+  WitchCopTotalPerkPoints = 6
+  NavySeerTotalPerkPoints = 7
+  NecroMedicTotalPerkPoints = 6
+  DruidTotalPerkPoints = 5
+</PerkManager>
+
