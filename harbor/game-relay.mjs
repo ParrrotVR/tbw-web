@@ -83,7 +83,8 @@ export function createGameRelay(onProblem) {
       for (const [name, value] of new Headers(options.headers)) {
         if (forwardedHeaders.has(name)) headers.set(name, value);
       }
-      headers.set('User-Agent', navigator.userAgent);
+      // Geometry Dash's game API rejects browser User-Agent strings.
+      headers.set('User-Agent', '');
       for (let redirects = 0; redirects <= 5; redirects++) {
         options.signal?.throwIfAborted();
         const result = await transport.request(url, method, body, [...headers], options.signal);
@@ -105,8 +106,10 @@ export function createGameRelay(onProblem) {
         const noBody = method === 'HEAD' || [204, 205, 304].includes(result.status);
         if (noBody) await result.body.cancel();
         if (result.status >= 400) {
-          onProblem?.('Geometry Dash’s server returned HTTP ' + result.status + '. Try again later.', false);
-        } else onProblem?.('', false);
+          if (!noBody) await result.body.cancel();
+          throw new Error('Geometry Dash rejected the online request (HTTP ' + result.status + ').');
+        }
+        onProblem?.('', false);
         return new Response(noBody ? null : result.body, {
           status: result.status, statusText: result.statusText || '', headers: responseHeaders,
         });
