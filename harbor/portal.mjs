@@ -13,11 +13,18 @@ const games = {
   tbw: { title: 'Tactical Breach Wizards', url: gameURL.href, action: '#game-card-action' },
   gd: { title: 'Geometry Dash', url: new URL('games/geometry-dash.html', portalBase).href, action: '#gd-card-action' },
 };
-const gameRequest = createGameRelay((text, needsConnection) => {
+const gameRequest = createGameRelay((text, needsConnection, connection) => {
   if (activeGame !== 'gd') return;
   const message = $('#game-message');
   message.textContent = text;
   message.hidden = !text;
+  if (connection) {
+    const status = $('#game-network-status');
+    status.hidden = false;
+    status.textContent = connection.state === 'connected' ? 'Online via Harbor' :
+      connection.state === 'connecting' ? 'Connecting via Harbor…' : 'Online request failed';
+    status.title = connection.fallback ? 'Connected through Harbor and the game’s public level relay.' : 'Game requests go through your Harbor server.';
+  }
   if (needsConnection) openConnection();
 });
 window.HarborGameNetwork = Object.freeze({
@@ -91,6 +98,8 @@ async function startGame(id) {
       gameFrame.addEventListener('load', () => pauseGame(currentView !== 'game'));
       gameFrame.src = games[id].url;
       $('#game-title').textContent = games[id].title;
+      $('#game-network-status').hidden = id !== 'gd';
+      $('#game-network-status').textContent = 'Online requests use Harbor';
       $('#game-message').hidden = true;
       $('#game-player').append(gameFrame);
       updateGameCards();
