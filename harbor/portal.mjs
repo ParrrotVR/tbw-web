@@ -1,5 +1,6 @@
 import './browser.mjs';
 import { getRelay, saveRelay, portalBase } from './relay-settings.mjs';
+import { createGameRelay } from './game-relay.mjs';
 const $ = selector => document.querySelector(selector);
 let gameFrame = null;
 let activeGame = null;
@@ -12,6 +13,21 @@ const games = {
   tbw: { title: 'Tactical Breach Wizards', url: gameURL.href, action: '#game-card-action' },
   gd: { title: 'Geometry Dash', url: new URL('games/geometry-dash.html', portalBase).href, action: '#gd-card-action' },
 };
+const gameRequest = createGameRelay((text, needsConnection) => {
+  if (activeGame !== 'gd') return;
+  const message = $('#game-message');
+  message.textContent = text;
+  message.hidden = !text;
+  if (needsConnection) openConnection();
+});
+window.HarborGameNetwork = Object.freeze({
+  request(source, input, options) {
+    if (activeGame !== 'gd' || source !== gameFrame?.contentWindow) {
+      return Promise.reject(new Error('Open Geometry Dash from the Games page to connect its online services.'));
+    }
+    return gameRequest(input, options);
+  },
+});
 function updateGameCards() {
   for (const [id, game] of Object.entries(games)) {
     $(game.action).textContent = gameFrame && activeGame === id ? 'Resume game ↗' : 'Play game ↗';

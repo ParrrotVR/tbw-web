@@ -1445,6 +1445,13 @@ function ipadPersistSave(name, bytes) {
 window.HarborGame = {
   pause: ipadPauseGame,
   persist: ipadPersistSave,
+  async fetch(input, options) {
+    if (window.parent === window) return fetch(input, options);
+    let network;
+    try { network = window.parent.HarborGameNetwork; } catch (_) {}
+    if (!network) throw new Error('The Harbor game connection is unavailable. Reopen Geometry Dash from the Games page.');
+    return network.request(window, input, options);
+  },
   async save() {
     if (!window.__gdGameStarted || ipadFailed) return;
     const issued = ipadSaveIssued;
@@ -1497,8 +1504,12 @@ function startupError(error) {
 }
 
 async function startGame() {
+  ipadLoadPhase = 'Checking browser support';
   if (typeof Worker !== 'function' || typeof WebAssembly !== 'object') {
     throw new Error('Open this file in Safari or another browser with WebAssembly support.');
+  }
+  if (typeof WebAssembly.Suspending !== 'function' || typeof WebAssembly.promising !== 'function') {
+    throw new Error('This Geometry Dash build requires WebAssembly JSPI, which this browser does not provide. On iPad, Safari 27 or later supports JSPI. Update iPadOS if an update is available, then reopen Harbor. This build has no compatibility fallback.');
   }
   const configuration = JSON.parse(document.getElementById('ipad-loader-config').textContent);
   const assets = new Map();
@@ -1595,6 +1606,9 @@ async function startGame() {
     runtime.slice(persistEnd);
   runtime = runtime.replace(frameStart, frameStart +
     'if(Module.harborPaused){await new Promise(resolve=>{(Module.harborPauseWaiters??=new Set()).add(resolve)})}');
+  const httpCall = 'fetch(UTF8ToString(proxy),opts)';
+  if (runtime.split(httpCall).length !== 2) throw new Error('The game HTTP hook does not match this runtime.');
+  runtime = runtime.replace(httpCall, 'window.HarborGame.fetch(UTF8ToString(proxy),opts)');
   const script = document.createElement('script');
   script.textContent = runtime;
   document.body.appendChild(script);
