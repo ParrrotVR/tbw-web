@@ -30,9 +30,14 @@ function letters(skip = []) {
   return p.join('');
 }
 
+// A smooth sine-like curve made of cubic segments (no sharp joins).
 function wave(y, x0, x1, amp, period) {
-  let d = `M${x0} ${y}`;
-  for (let x = x0; x < x1; x += period) d += ` q${period / 4} ${-amp} ${period / 2} 0 t${period / 2} 0`;
+  const h = period / 2, k = h * 0.3642;
+  let d = `M${x0} ${y}`, up = true;
+  for (let x = x0; x < x1; x += h, up = !up) {
+    const dy = up ? -amp : amp;
+    d += ` C${(x + k).toFixed(2)} ${y + dy * 1.33} ${(x + h - k).toFixed(2)} ${y + dy * 1.33} ${(x + h).toFixed(2)} ${y}`;
+  }
   return d;
 }
 
@@ -47,21 +52,23 @@ function tower() {
   return `<polygon fill="${INK}" points="-3,200 25,200 20,46 2,46"/>${band(72, 92)}${band(122, 142)}<rect x="7" y="181" width="8" height="19" rx="4" fill="var(--logo-knock)"/><rect x="-3" y="39" width="28" height="8" rx="2.5" fill="${INK}"/><rect x="3" y="19" width="16" height="21" fill="var(--lamp)"/><path d="M11 19V39" stroke="${INK}" stroke-width="2.5"/><path d="M-1 21 L11 6 L23 21 Z" fill="${INK}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="11" cy="4" r="3.5" fill="${INK}"/>`;
 }
 
+// Letters change to sea colour below a gentle water line. The line itself is
+// only drawn out to either side of the word, so it never cuts across a letter.
 function waterWord(u, y, body, under) {
-  const line = wave(y, -60, 700, 5, 40);
+  const P = 120, line = wave(y, -160, 760, 3, P), motion = `class="hb-wave" style="--p:${P}px;--d:7s"`;
   return {
-    vb: [-12, 38, 628, 184],
-    inner: `<defs><clipPath id="hu${u}"><path class="hb-wave" d="${line} V-100 H-60 Z"/></clipPath><clipPath id="hd${u}"><path class="hb-wave" d="${line} V400 H-60 Z"/></clipPath></defs><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><path class="hb-wave" d="${line}" fill="none" stroke="var(--sea)" stroke-width="4.5" stroke-linecap="round"/><path d="M40 214h34M150 218h22M300 214h46M450 218h30M540 214h22" stroke="var(--sea)" stroke-width="3.5" stroke-linecap="round" opacity=".45"/>`,
+    vb: [-12, 38, 628, 170],
+    inner: `<defs><clipPath id="hu${u}"><path ${motion} d="${line} V-100 H-160 Z"/></clipPath><clipPath id="hd${u}"><path ${motion} d="${line} V400 H-160 Z"/></clipPath><clipPath id="hm${u}"><rect x="-400" y="0" width="388" height="300"/><rect x="580" y="0" width="400" height="300"/></clipPath></defs><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><g clip-path="url(#hm${u})"><path ${motion} d="${line}" fill="none" stroke="var(--sea)" stroke-width="4" stroke-linecap="round"/></g>`,
   };
 }
 
 const MARKS = {
   afloat(u) {
     const word = (c, band) => stroke(c, letters(['o'])) + `<g class="hb-bob" style="transform-origin:476px 150px">${ring(476, 150, { ink: c, band, cls: '' })}</g>`;
-    return waterWord(u, 176, word(INK, 'var(--accent)'), `<g opacity=".9">${word('var(--sea)', 'color-mix(in srgb,var(--accent) 55%,var(--sea))')}</g>`);
+    return waterWord(u, 174, word(INK, 'var(--accent)'), word('var(--sea)', 'color-mix(in srgb,var(--accent) 55%,var(--sea))'));
   },
   waterline(u) {
-    return waterWord(u, 168, stroke(INK, letters()), stroke('var(--sea)', letters(), 'transform="translate(3 2)" opacity=".85"'));
+    return waterWord(u, 168, stroke(INK, letters()), stroke('var(--sea)', letters()));
   },
   lifering() {
     return { vb: [-12, 38, 628, 176], inner: stroke(INK, letters(['o'])) + ring(476) };
@@ -72,7 +79,7 @@ const MARKS = {
     for (let i = 0; i < 8; i++) { const a = (i * 45 + 22.5) * Math.PI / 180; bolts += `<circle cx="${(cx + 39 * Math.cos(a)).toFixed(1)}" cy="${(150 + 39 * Math.sin(a)).toFixed(1)}" r="2.8" fill="var(--logo-knock)"/>`; }
     return {
       vb: [-12, 38, 628, 176],
-      inner: `<defs><clipPath id="hp${u}"><circle cx="${cx}" cy="150" r="29"/></clipPath></defs>${stroke(INK, letters(['o']))}<circle cx="${cx}" cy="150" r="29" fill="var(--glass)"/><g clip-path="url(#hp${u})"><path class="hb-wave" style="--p:30px;--d:5s" d="${wave(150, cx - 60, cx + 80, 3, 30)} V200 H${cx - 60} Z" fill="var(--sea)" opacity=".45"/><path class="hb-wave" style="--p:24px" d="${wave(156, cx - 60, cx + 80, 4, 24)} V200 H${cx - 60} Z" fill="var(--sea)"/></g><circle cx="${cx}" cy="150" r="39" fill="none" stroke="${INK}" stroke-width="22"/>${bolts}`,
+      inner: `<defs><clipPath id="hp${u}"><circle cx="${cx}" cy="150" r="29"/></clipPath></defs>${stroke(INK, letters(['o']))}<circle cx="${cx}" cy="150" r="29" fill="var(--glass)"/><g clip-path="url(#hp${u})"><path class="hb-wave" style="--p:36px;--d:5s" d="${wave(150, cx - 72, cx + 80, 2.5, 36)} V200 H${cx - 72} Z" fill="var(--sea)" opacity=".45"/><path class="hb-wave" style="--p:30px" d="${wave(157, cx - 60, cx + 80, 3, 30)} V200 H${cx - 60} Z" fill="var(--sea)"/></g><circle cx="${cx}" cy="150" r="39" fill="none" stroke="${INK}" stroke-width="22"/>${bolts}`,
     };
   },
   lighthouse(u) {
@@ -93,29 +100,40 @@ const MARKS = {
   },
 };
 
-const ICONS = {
-  lifering: () => ring(50, 50, { r: 24, sw: 15 }),
-  afloat: (u, sea) => `<g class="hb-bob" style="transform-origin:50px 48px">${ring(50, 48, { r: 22, sw: 13, cls: '' })}</g>${sea(64)}`,
-  waterline: (u, sea) => `<path d="M32 18V80M32 54A19 19 0 0 1 70 54V80" fill="none" stroke="${INK}" stroke-width="13" stroke-linecap="round"/>${sea(64)}`,
-  porthole: (u, sea) => {
-    let bolts = '';
-    for (let i = 0; i < 8; i++) { const a = (i * 45 + 22.5) * Math.PI / 180; bolts += `<circle cx="${(50 + 25 * Math.cos(a)).toFixed(1)}" cy="${(50 + 25 * Math.sin(a)).toFixed(1)}" r="1.9" fill="var(--tile)"/>`; }
-    return `<defs><clipPath id="hip${u}"><circle cx="50" cy="50" r="18"/></clipPath></defs><circle cx="50" cy="50" r="18" fill="var(--glass)"/><g clip-path="url(#hip${u})">${sea(54, 3, 16)}</g><circle cx="50" cy="50" r="25" fill="none" stroke="${INK}" stroke-width="13"/>${bolts}`;
-  },
-  lighthouse: () => `<polygon points="44,22 100,4 100,44" fill="var(--lamp)" opacity=".35"/><g transform="translate(39 10) scale(.42)" style="--logo-knock:var(--tile)">${tower()}</g>`,
-  crane: () => `<path d="M26 88V22H80" fill="none" stroke="${INK}" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><g class="hb-swing" style="transform-origin:70px 26px"><path d="M70 26V48" stroke="${INK}" stroke-width="3"/><rect x="54" y="48" width="32" height="22" rx="2" fill="var(--accent)"/><path d="M61 52v14M67 52v14M73 52v14M79 52v14" stroke="rgba(0,0,0,.22)" stroke-width="2"/></g>`,
-};
-
 export function wordmarkSVG(name = variant) {
   const { vb, inner } = MARKS[name](++uid);
   return `<svg class="hb hb-mark hb-${name}" viewBox="${vb.join(' ')}" style="aspect-ratio:${vb[2]}/${vb[3]}" role="img" aria-label="harbor">${inner}</svg>`;
 }
 
-export function iconSVG(name = variant, tile = true) {
-  const u = ++uid;
-  const sea = (y, a = 4, p = 24) => `<path class="hb-wave" style="--p:${p}px" d="${wave(y, -24, 140, a, p)} V120 H-24 Z" fill="var(--sea)" opacity=".88"/>`;
-  const body = ICONS[name](u, sea);
-  return `<svg class="hb hb-icon" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="ht${u}"><rect width="100" height="100" rx="24"/></clipPath></defs><g clip-path="url(#ht${u})">${tile ? '<rect width="100" height="100" fill="var(--tile)"/>' : ''}${body}</g></svg>`;
+// The small mark: the wordmark's "h", dipping into calm water.
+export function iconSVG(tile = true) {
+  const u = ++uid, line = wave(66, -40, 160, 2.2, 60);
+  const h = color => `<path d="M33 19V79M33 54A19 19 0 0 1 71 54V79" fill="none" stroke="${color}" stroke-width="13" stroke-linecap="round"/>`;
+  return `<svg class="hb hb-icon" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="ht${u}"><rect width="100" height="100" rx="24"/></clipPath><clipPath id="hw${u}"><path d="${line} V120 H-40 Z"/></clipPath></defs><g clip-path="url(#ht${u})">${tile ? '<rect width="100" height="100" fill="var(--tile)"/>' : ''}${h(INK)}<g clip-path="url(#hw${u})"><rect width="100" height="100" fill="var(--sea)" opacity=".22"/>${h('var(--sea)')}</g></g></svg>`;
+}
+
+// Real site icons: bundled for the built-in shortcuts, otherwise looked up by
+// domain. The first letter stays as a fallback if no image loads.
+const LOCAL_ICONS = [['mcdle.net', 'mcdle.png'], ['playdaily.org/krillion', 'krillion.png'], ['digdig.io', 'digdig.png'], ['neal.fun', 'neal.png']];
+export function siteIconURL(address) {
+  let url;
+  try { url = new URL(address); } catch { return ''; }
+  if (!/^https?:$/.test(url.protocol)) return '';
+  const host = url.hostname.replace(/^www\./, '');
+  for (const [prefix, file] of LOCAL_ICONS) if ((host + url.pathname).startsWith(prefix)) return new URL('sites/' + file, import.meta.url).href;
+  return 'https://icons.duckduckgo.com/ip3/' + encodeURIComponent(host) + '.ico';
+}
+export function fillSiteIcon(element, address, letter) {
+  const src = siteIconURL(address);
+  if (element.dataset.iconSrc === src && element.dataset.iconLetter === letter) return;
+  element.dataset.iconSrc = src; element.dataset.iconLetter = letter;
+  element.classList.remove('has-img');
+  element.textContent = letter;
+  if (!src) return;
+  const image = new Image();
+  image.alt = ''; image.decoding = 'async'; image.referrerPolicy = 'no-referrer';
+  image.onload = () => { if (element.dataset.iconSrc !== src || image.naturalWidth < 2) return; element.textContent = ''; element.append(image); element.classList.add('has-img'); };
+  image.src = src;
 }
 
 function mount() {
@@ -123,13 +141,17 @@ function mount() {
   const wordmark = document.getElementById('wordmark');
   if (wordmark) {
     wordmark.innerHTML = wordmarkSVG();
-    // Play the motion for a few cycles, then rest; tapping or hovering replays it.
-    const replay = () => { wordmark.classList.remove('hb-live'); void wordmark.offsetWidth; wordmark.classList.add('hb-live'); };
+    // Play the motion for a few cycles, then rest. Hover or tap replays it,
+    // but only once the previous run has finished (no mid-motion restarts).
+    const replay = () => {
+      try { if (wordmark.getAnimations({ subtree: true }).some(a => a.playState === 'running')) return; } catch {}
+      wordmark.classList.remove('hb-live'); void wordmark.offsetWidth; wordmark.classList.add('hb-live');
+    };
     wordmark.addEventListener('pointerenter', replay);
     wordmark.addEventListener('click', replay);
     replay();
   }
-  for (const slot of document.querySelectorAll('[data-harbor-icon]')) slot.innerHTML = iconSVG(variant, slot.dataset.harborIcon !== 'bare');
+  for (const slot of document.querySelectorAll('[data-harbor-icon]')) slot.innerHTML = iconSVG(slot.dataset.harborIcon !== 'bare');
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, { once: true });
 else mount();

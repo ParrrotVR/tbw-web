@@ -18,7 +18,7 @@ body:not([data-view=browser]) #newtab,body:not([data-view=browser]) #frames,body
 .library-heading p{color:var(--muted);font-size:15px;margin:0}
 .game-card{width:min(100%,780px);margin:0 auto;display:flex;align-items:center;gap:22px;padding:18px;border:1px solid var(--line);background:var(--surface);border-radius:24px;text-align:left;transition:border-color .15s,transform .15s}
 .game-card:hover{border-color:var(--accent);transform:translateY(-2px)}
-.game-card img{flex-shrink:0;border-radius:20px;background:var(--surface2)}
+.game-card img{flex-shrink:0;width:192px;height:108px;object-fit:cover;border-radius:16px;background:var(--surface2)}
 .game-card-copy{display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 .game-card strong{font-size:22px;font-weight:600;letter-spacing:-.01em}
 .game-card-copy>span{color:var(--muted);font-size:14.5px}
@@ -55,7 +55,7 @@ body.game-expanded .game-view{position:fixed;inset:0;z-index:10000;width:100%;he
   .portal-dock{gap:2px;padding-left:6px;padding-right:6px}
   .portal-dock button{min-width:0;flex:1;padding:10px;gap:7px;font-size:13px}
   .game-card{padding:14px;gap:14px}
-  .game-card img{width:76px;height:76px}
+  .game-card img{width:128px;height:72px;border-radius:12px}
   .game-card strong{font-size:18px}
   .game-bar strong{display:none}
   .game-bar button{font-size:12px;padding:8px 11px}

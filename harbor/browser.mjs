@@ -5,15 +5,16 @@ import { connectSocket } from './socket-client.mjs';
 import { browserPlugin } from './browser-plugin.mjs';
 import { NativeHttpTransport } from './http-client.mjs';
 import { isFilteredHost, filteredResponse } from './content-filter.mjs';
-import { iconSVG } from './brand.mjs';
+import { iconSVG, fillSiteIcon } from './brand.mjs';
 
 const $ = selector => document.querySelector(selector);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
-const settings = { search: 'google', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
+const settings = { search: 'duckduckgo', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
 if (!settings.themeV2) { if (settings.appearance === 'light') settings.appearance = 'harbor'; settings.themeV2 = true; }
 if (!['harbor', 'light', 'dark', 'system'].includes(settings.appearance)) settings.appearance = 'harbor';
-if (!SEARCH_ENGINES[settings.search]) settings.search = 'google';
+if (!settings.searchV2) { if (settings.search === 'google') settings.search = 'duckduckgo'; settings.searchV2 = true; }
+if (!SEARCH_ENGINES[settings.search]) settings.search = 'duckduckgo';
 let bookmarks = read('harbor:bookmarks', [
   { title: 'MCdle', url: 'https://www.mcdle.net/en_gb' },
   { title: 'Krillion', url: 'https://playdaily.org/krillion' },
@@ -90,7 +91,7 @@ function renderTabs() {
     tab.tabElement.setAttribute('aria-selected', String(tab.id === state.activeId));
     tab.tabElement.classList.toggle('loading', tab.loading);
     tab.tabElement.title = tab.title;
-    const favicon = tab.tabElement.querySelector('.tab-favicon'); favicon.classList.toggle('harbor', !tab.url); if (tab.url) favicon.textContent = pageLabel(tab.url).slice(0, 1).toUpperCase(); else if (!favicon.querySelector('svg')) favicon.innerHTML = iconSVG();
+    const favicon = tab.tabElement.querySelector('.tab-favicon'); favicon.classList.toggle('harbor', !tab.url); if (tab.url) fillSiteIcon(favicon, tab.url, pageLabel(tab.url).slice(0, 1).toUpperCase()); else if (!favicon.querySelector('svg')) { favicon.dataset.iconSrc = ''; favicon.classList.remove('has-img'); favicon.innerHTML = iconSVG(); }
     tab.tabElement.querySelector('.tab-title').textContent = tab.title;
     if ($('#tabs').children[state.tabs.indexOf(tab)] !== tab.tabElement) $('#tabs').insertBefore(tab.tabElement, $('#tabs').children[state.tabs.indexOf(tab)] || null);
   }
@@ -261,7 +262,7 @@ function renderBookmarks() {
   $('#bookmarks').replaceChildren();
   for (const item of bookmarks.slice(0, 18)) {
     const button = document.createElement('button'); button.className = 'bookmark-item'; button.title = item.url;
-    const mark = document.createElement('span'); mark.className = 'mini-icon'; mark.textContent = item.title.slice(0, 1).toUpperCase();
+    const mark = document.createElement('span'); mark.className = 'mini-icon'; fillSiteIcon(mark, item.url, item.title.slice(0, 1).toUpperCase());
     const label = document.createElement('span'); label.textContent = item.title; button.append(mark, label);
     button.addEventListener('click', event => { if (event.ctrlKey || event.metaKey) newTab(item.url, false); else launch(item.url); });
     button.addEventListener('contextmenu', event => { event.preventDefault(); bookmarks = bookmarks.filter(bookmark => bookmark !== item); write('harbor:bookmarks', bookmarks); renderBookmarks(); renderActive(); notice('Shortcut removed.'); });
