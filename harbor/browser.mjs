@@ -5,11 +5,14 @@ import { connectSocket } from './socket-client.mjs';
 import { browserPlugin } from './browser-plugin.mjs';
 import { NativeHttpTransport } from './http-client.mjs';
 import { isFilteredHost, filteredResponse } from './content-filter.mjs';
+import { iconSVG } from './brand.mjs';
 
 const $ = selector => document.querySelector(selector);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
-const settings = { search: 'google', appearance: 'light', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
+const settings = { search: 'google', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
+if (!settings.themeV2) { if (settings.appearance === 'light') settings.appearance = 'harbor'; settings.themeV2 = true; }
+if (!['harbor', 'light', 'dark', 'system'].includes(settings.appearance)) settings.appearance = 'harbor';
 if (!SEARCH_ENGINES[settings.search]) settings.search = 'google';
 let bookmarks = read('harbor:bookmarks', [
   { title: 'MCdle', url: 'https://www.mcdle.net/en_gb' },
@@ -53,7 +56,7 @@ function notice(message) { clearTimeout(toastTimer); $('#notice').textContent = 
 function bounded(promise, ms, message) { let timer; return Promise.race([promise, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), ms); })]).finally(() => clearTimeout(timer)); }
 function loadScript(url) { return new Promise((resolve, reject) => { const script = document.createElement('script'); script.src = url; script.onload = resolve; script.onerror = () => reject(new Error('A browser component could not load. Restart Harbor and reload.')); document.head.append(script); }); }
 function saveSession() { clearTimeout(saveTimer); saveTimer = setTimeout(() => write('harbor:tabs', { active: state.tabs.findIndex(tab => tab.id === state.activeId), tabs: state.tabs.map(tab => ({ url: tab.url, title: tab.title })) }), 150); }
-function setAppearance() { const value = settings.appearance === 'system' ? (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light') : settings.appearance; document.documentElement.dataset.theme = value; }
+function setAppearance() { const value = settings.appearance === 'system' ? (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light') : settings.appearance; document.documentElement.dataset.theme = value; document.querySelector('meta[name=theme-color]')?.setAttribute('content', { harbor: '#0e2738', light: '#f5f3ee', dark: '#121416' }[value]); }
 function setPreferences() {
   $('#address').placeholder = `Search ${SEARCH_ENGINES[settings.search].name} or enter an address`;
   $('#home-query').placeholder = `Search ${SEARCH_ENGINES[settings.search].name} or enter an address`;
@@ -87,7 +90,7 @@ function renderTabs() {
     tab.tabElement.setAttribute('aria-selected', String(tab.id === state.activeId));
     tab.tabElement.classList.toggle('loading', tab.loading);
     tab.tabElement.title = tab.title;
-    const favicon = tab.tabElement.querySelector('.tab-favicon'); favicon.classList.toggle('harbor', !tab.url); favicon.textContent = tab.url ? pageLabel(tab.url).slice(0, 1).toUpperCase() : '≈';
+    const favicon = tab.tabElement.querySelector('.tab-favicon'); favicon.classList.toggle('harbor', !tab.url); if (tab.url) favicon.textContent = pageLabel(tab.url).slice(0, 1).toUpperCase(); else if (!favicon.querySelector('svg')) favicon.innerHTML = iconSVG();
     tab.tabElement.querySelector('.tab-title').textContent = tab.title;
     if ($('#tabs').children[state.tabs.indexOf(tab)] !== tab.tabElement) $('#tabs').insertBefore(tab.tabElement, $('#tabs').children[state.tabs.indexOf(tab)] || null);
   }
