@@ -234,3 +234,22 @@ $('#connection-form').addEventListener('submit', async event => {
 });
 if (getRelay().address) $('#connection-dot').classList.add('connected');
 view('browser');
+// Harbor sits inside two launcher frames sized with 100vh, which iPad Safari can make
+// taller than the visible screen (and may not update on rotation). All three pages are
+// on the same origin, so size each enclosing frame to the top window directly.
+function fitFrames() {
+  try {
+    const width = top.innerWidth + 'px', height = top.innerHeight + 'px';
+    for (let win = window; win !== top; win = win.parent) {
+      const frame = win.frameElement;
+      if (!frame) return;
+      frame.style.setProperty('width', width, 'important');
+      frame.style.setProperty('height', height, 'important');
+    }
+  } catch {}
+}
+if (window !== top) {
+  fitFrames();
+  try { top.addEventListener('resize', fitFrames); top.addEventListener('orientationchange', () => setTimeout(fitFrames, 300)); } catch {}
+  window.addEventListener('pagehide', () => { try { top.removeEventListener('resize', fitFrames); } catch {} });
+}
