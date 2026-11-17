@@ -6,6 +6,12 @@ export class NativeHttpTransport {
   async init() { this.ready = true; }
   async meta() {}
   async request(url, method, body, headers, signal) {
+    // The engine can't read the browser's User-Agent for page requests, so the relay
+    // falls back to a Chrome identity. On Safari and Firefox that contradicts what the
+    // page's own scripts report, and Cloudflare re-challenges forever. Desktop Chrome
+    // already matches the fallback, so only other browsers send their own.
+    if (Array.isArray(headers) && !/Chrome\//.test(navigator.userAgent) && !headers.some(([name]) => String(name).toLowerCase() === 'user-agent'))
+      headers = [...headers, ['User-Agent', navigator.userAgent]];
     const metadata = JSON.stringify({ url: url.href, method, headers });
     const bytes = new TextEncoder().encode(metadata);
     const encoded = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''));
