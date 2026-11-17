@@ -3,6 +3,9 @@ export const SEARCH_ENGINES = {
   duckduckgo: { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=' },
   ddglite: { name: 'DuckDuckGo Lite', url: 'https://html.duckduckgo.com/html/?q=' },
   bing: { name: 'Bing', url: 'https://www.bing.com/search?q=' },
+  yahoo: { name: 'Yahoo', url: 'https://search.yahoo.com/search?p=' },
+  mojeek: { name: 'Mojeek', url: 'https://www.mojeek.com/search?q=' },
+  brave: { name: 'Brave Search', url: 'https://search.brave.com/search?q=' },
 };
 export function resolveInput(input, engine = 'google') {
   const text = String(input).trim();

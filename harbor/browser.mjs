@@ -10,11 +10,13 @@ import { iconSVG, fillSiteIcon } from './brand.mjs';
 const $ = selector => document.querySelector(selector);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
-const settings = { search: 'duckduckgo', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
+const settings = { search: 'bing', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
 if (!settings.themeV2) { if (settings.appearance === 'light') settings.appearance = 'harbor'; settings.themeV2 = true; }
 if (!['harbor', 'light', 'dark', 'system'].includes(settings.appearance)) settings.appearance = 'harbor';
 if (!settings.searchV2) { if (settings.search === 'google') settings.search = 'duckduckgo'; settings.searchV2 = true; }
-if (!SEARCH_ENGINES[settings.search]) settings.search = 'duckduckgo';
+// DuckDuckGo stalls requests from the Harbor server's cloud network; move off it once.
+if (!settings.searchV3) { if (['duckduckgo', 'ddglite'].includes(settings.search)) settings.search = 'bing'; settings.searchV3 = true; }
+if (!SEARCH_ENGINES[settings.search]) settings.search = 'bing';
 let bookmarks = read('harbor:bookmarks', [
   { title: 'MCdle', url: 'https://www.mcdle.net/en_gb' },
   { title: 'Krillion', url: 'https://playdaily.org/krillion' },
