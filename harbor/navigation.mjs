@@ -1,6 +1,7 @@
 export const SEARCH_ENGINES = {
   google: { name: 'Google', url: 'https://www.google.com/search?q=' },
   duckduckgo: { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=' },
+  ddglite: { name: 'DuckDuckGo Lite', url: 'https://html.duckduckgo.com/html/?q=' },
   bing: { name: 'Bing', url: 'https://www.bing.com/search?q=' },
 };
 export function resolveInput(input, engine = 'google') {
