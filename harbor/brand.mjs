@@ -55,10 +55,12 @@ function tower() {
 // Letters change to sea colour below a gentle water line. The line runs the
 // full width behind the letters, with a few ripples underneath.
 function waterWord(u, y, body, under) {
-  const P = 64, line = wave(y, -160, 780, 4, P), motion = `class="hb-wave" style="--p:${P}px;--d:4s"`;
+  // The line is longer than it looks and fades out at both ends, so the loop
+  // (shift by one wave, then reset) never shows a jump.
+  const P = 64, line = wave(y, -160, 900, 4, P), motion = `class="hb-wave" style="--p:${P}px;--d:4s"`;
   return {
     vb: [-12, 38, 628, 184],
-    inner: `<defs><clipPath id="hu${u}"><path ${motion} d="${line} V-100 H-160 Z"/></clipPath><clipPath id="hd${u}"><path ${motion} d="${line} V400 H-160 Z"/></clipPath></defs><path ${motion} d="${line}" fill="none" stroke="var(--sea)" stroke-width="4.5" stroke-linecap="round"/><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><g class="hb-ripple" stroke="var(--sea)" stroke-width="3.5" stroke-linecap="round" opacity=".45"><path d="M40 214h34M300 214h46M540 214h22"/><path d="M150 219h22M450 219h30"/></g>`,
+    inner: `<defs><clipPath id="hu${u}"><path ${motion} d="${line} V-100 H-160 Z"/></clipPath><clipPath id="hd${u}"><path ${motion} d="${line} V400 H-160 Z"/></clipPath><linearGradient id="hf${u}" gradientUnits="userSpaceOnUse" x1="-130" y1="0" x2="750" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".11" stop-color="#fff"/><stop offset=".89" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient><mask id="hm${u}" maskUnits="userSpaceOnUse" x="-300" y="0" width="1300" height="300"><rect x="-300" y="0" width="1300" height="300" fill="url(#hf${u})"/></mask></defs><g mask="url(#hm${u})"><path ${motion} d="${line}" fill="none" stroke="var(--sea)" stroke-width="4.5" stroke-linecap="round"/></g><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><g class="hb-ripple" stroke="var(--sea)" stroke-width="3.5" stroke-linecap="round" opacity=".45"><path d="M40 214h34M300 214h46M540 214h22"/><path d="M150 219h22M450 219h30"/></g>`,
   };
 }
 
@@ -112,6 +114,12 @@ export function iconSVG(tile = true) {
   return `<svg class="hb hb-icon" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="ht${u}"><rect width="100" height="100" rx="24"/></clipPath><clipPath id="hw${u}"><path d="${line} V120 H-40 Z"/></clipPath></defs><g clip-path="url(#ht${u})">${tile ? '<rect width="100" height="100" fill="var(--tile)"/>' : ''}${h(INK)}<g clip-path="url(#hw${u})"><rect width="100" height="100" fill="var(--sea)" opacity=".22"/>${h('var(--sea)')}</g></g></svg>`;
 }
 
+// The error page's own mark: a life ring adrift on the water.
+export function adriftSVG() {
+  const u = ++uid, P = 50, line = wave(64, -60, 220, 3, P);
+  return `<svg class="hb hb-icon" viewBox="0 0 100 100" aria-hidden="true"><defs><clipPath id="ha${u}"><rect width="100" height="100" rx="24"/></clipPath></defs><g clip-path="url(#ha${u})"><rect width="100" height="100" fill="var(--tile)"/><g class="hb-bob" style="transform-origin:50px 52px">${ring(50, 52, { r: 20, sw: 12, cls: '' })}</g><path class="hb-wave" style="--p:${P}px;--d:3.5s" d="${line} V120 H-60 Z" fill="var(--sea)" opacity=".85"/></g></svg>`;
+}
+
 // Real site icons: bundled for the built-in shortcuts, otherwise looked up by
 // domain. The first letter stays as a fallback if no image loads.
 const LOCAL_ICONS = [['mcdle.net', 'mcdle.png'], ['playdaily.org/krillion', 'krillion.png'], ['digdig.io', 'digdig.png'], ['neal.fun', 'neal.png']];
@@ -143,6 +151,7 @@ function mount() {
     wordmark.innerHTML = wordmarkSVG();
     wordmark.classList.add('hb-live');
   }
+  for (const slot of document.querySelectorAll('[data-harbor-adrift]')) { slot.innerHTML = adriftSVG(); slot.classList.add('hb-live'); }
   for (const slot of document.querySelectorAll('[data-harbor-icon]')) slot.innerHTML = iconSVG(slot.dataset.harborIcon !== 'bare');
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, { once: true });

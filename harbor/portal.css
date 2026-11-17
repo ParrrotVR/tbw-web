@@ -1,14 +1,16 @@
-/* navigation rail on the right, so the page keeps its full height */
-.browser-app{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr)}
-.browser-app>.chrome{grid-column:1;grid-row:1}
-.browser-app>.viewport{grid-column:1;grid-row:2}
-.portal-dock{grid-column:2;grid-row:1/3;width:78px;display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));padding-right:calc(8px + env(safe-area-inset-right));border-left:1px solid var(--line);background:var(--chrome);z-index:10;min-height:0}
-.portal-dock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:60px;padding:9px 4px;border-radius:16px;color:var(--muted);font-weight:500;font-size:11.5px}
-.portal-dock button svg{width:21px;height:21px}
+/* floating side rail: only on the home page and the games library */
+.portal-dock{position:absolute;right:16px;top:50%;transform:translateY(-50%);z-index:12;display:none;flex-direction:column;align-items:stretch;gap:2px;width:74px;max-height:calc(100% - 28px);overflow-y:auto;scrollbar-width:none;padding:8px;border-radius:24px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+.portal-dock::-webkit-scrollbar{display:none}
+body[data-view=games] .portal-dock,body[data-view=browser] .viewport:has(>#newtab:not([hidden])) .portal-dock{display:flex}
+.portal-dock svg{stroke:none;fill:none;width:24px;height:24px}
+.portal-dock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:58px;padding:8px 2px;border-radius:16px;color:var(--muted);font-weight:500;font-size:10.5px;line-height:1.1;flex-shrink:0}
 .portal-dock button:hover{color:var(--ink);background:var(--hover)}
+.portal-dock button:hover svg{transform:scale(1.08)}
+.portal-dock button svg{transition:transform .15s}
 .portal-dock button[aria-current=page]{background:var(--surface2);color:var(--ink)}
 .portal-dock button[aria-current=page] svg{color:var(--accent)}
-#connection-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.55;position:absolute;right:15px;top:11px}
+.portal-dock hr{width:60%;margin:4px auto;border-color:var(--line)}
+#connection-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.55;position:absolute;right:13px;top:9px}
 #connection-dot.connected{background:var(--lamp);opacity:1}
 #connection-dot.connected::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--lamp);animation:buoy 2.8s ease-out infinite;will-change:transform,opacity}
 @keyframes buoy{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.8);opacity:0}}
@@ -28,6 +30,15 @@ body:not([data-view=browser]) #newtab,body:not([data-view=browser]) #frames,body
 .game-card-copy>span{color:var(--muted);font-size:14.5px}
 .game-card .play-label{margin-top:8px;padding:6px 14px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-weight:600;font-size:13px}
 .game-card + .game-card{margin-top:14px}
+
+/* websites opened from the rail */
+.site-view{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--page);z-index:4}
+.site-bar{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--chrome);border-bottom:1px solid var(--line);min-height:52px}
+.site-bar>button:first-child,.site-bar>a{display:flex;align-items:center;gap:6px;padding:8px 14px 8px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;color:var(--muted);text-decoration:none}
+.site-bar>button:first-child:hover,.site-bar>a:hover{color:var(--ink);border-color:color-mix(in srgb,var(--accent) 60%,var(--line))}
+.site-bar svg{width:16px;height:16px}
+.site-bar strong{flex:1;font-size:14px;font-weight:600;padding-left:4px}
+#site-frame{flex:1;min-height:0;width:100%;border:0;display:block;background:#fff}
 
 /* game player */
 .game-view{position:absolute;inset:0;display:flex;flex-direction:column;background:#0b0f13}
@@ -53,14 +64,20 @@ body.game-expanded .game-view{position:fixed;inset:0;z-index:10000;width:100%;he
 #connection-dismiss{font-size:22px}
 #connect-browser{color:var(--ink)}
 #menu-diagnostics{display:none!important}
-.newtab-footer{flex-wrap:wrap;gap:10px}
-
-.browser-menu{right:90px}
+.newtab-footer{flex-wrap:wrap;gap:10px;padding-right:110px}
+.newtab-footer button svg{width:15px;height:15px}
+@media(max-width:1000px){
+  .newtab-content{width:min(600px,calc(100% - 200px));margin-left:max(24px,calc((100% - 600px - 96px) / 2))}
+  .games-view{padding-right:110px}
+}
 @media(max-width:600px){
-  .browser-menu{right:70px;max-width:calc(100% - 82px)}
-  .portal-dock{width:60px;gap:4px;padding:8px 5px calc(8px + env(safe-area-inset-bottom))}
-  .portal-dock button{min-height:54px;font-size:10px;gap:4px;border-radius:13px}
-  #connection-dot{right:9px;top:9px}
+  .portal-dock{right:8px;width:62px;padding:6px;border-radius:20px}
+  .portal-dock button{min-height:52px;font-size:9.5px;border-radius:14px}
+  .portal-dock svg{width:22px;height:22px}
+  #connection-dot{right:9px;top:8px}
+  .newtab-footer{padding-right:84px}
+  .newtab-content{width:calc(100% - 100px);margin-left:18px}
+  .games-view{padding-right:84px}
   .game-card{padding:14px;gap:14px}
   .game-card img{width:128px;height:72px;border-radius:12px}
   .game-card strong{font-size:18px}
