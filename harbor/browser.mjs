@@ -324,7 +324,7 @@ $('#reload').addEventListener('click', () => { const tab = active(); if (tab.loa
 for (const id of ['home', 'brand-home']) $('#' + id).addEventListener('click', goHome);
 $('#bookmark').addEventListener('click', toggleBookmark); $('#add-shortcut').addEventListener('click', openBookmarkDialog);
 $('#bookmark-form').addEventListener('submit', event => { event.preventDefault(); try { const url = new URL($('#bookmark-url').value); if (!['https:', 'http:'].includes(url.protocol)) throw new Error('Use a website address.'); bookmarks.push({ title: $('#bookmark-name').value.trim(), url: url.href }); write('harbor:bookmarks', bookmarks); renderBookmarks(); $('#bookmark-dialog').close(); } catch (error) { notice(error.message); } });
-for (const id of ['customize', 'search-engine-name', 'menu-settings']) $('#' + id).addEventListener('click', openSettings);
+for (const id of ['customize', 'search-engine-name', 'menu-settings', 'rail-settings']) $('#' + id).addEventListener('click', openSettings);
 for (const id of ['show-history', 'menu-history']) $('#' + id).addEventListener('click', openHistory);
 $('#clear-history').addEventListener('click', () => { visited = []; write('harbor:history', visited); $('#history-dialog').close(); openHistory(); });
 $('#search-engine').addEventListener('change', event => { settings.search = event.target.value; setPreferences(); });

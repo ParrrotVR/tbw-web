@@ -66,6 +66,7 @@ function view(name) {
   document.body.dataset.view = name;
   $('#games-view').hidden = name !== 'games';
   $('#game-view').hidden = name !== 'game';
+  $('#site-view').hidden = name !== 'site';
   $('#view-browser').setAttribute('aria-current', name === 'browser' ? 'page' : 'false');
   $('#view-games').setAttribute('aria-current', name === 'games' || name === 'game' ? 'page' : 'false');
   pauseGame(name !== 'game');
@@ -146,6 +147,30 @@ async function saveAndCloseGame() {
     throw error;
   } finally { button.disabled = false; button.textContent = 'Save & close'; }
 }
+const sites = {
+  gnmath: { title: 'gn-math', url: 'https://unpkg.com/snoopylearning@1.0.0/index.svg' },
+  truffled: { title: 'truffled', url: 'https://spanish-class.scottbaptist.com' },
+  lucide: { title: 'lucide', url: 'https://s3.amazonaws.com/mathhub/index.html' },
+  bull33: { title: 'bull-33', url: 'https://cdn.jsdelivr.net/gh/phtnlol/phtn@main/index.svg?r=g' },
+};
+function openSite(id) {
+  const site = sites[id], frame = $('#site-frame');
+  if (!site) return;
+  if (frame.dataset.site !== id) { frame.dataset.site = id; frame.src = site.url; }
+  $('#site-title').textContent = site.title;
+  $('#site-external').href = site.url;
+  view('site');
+}
+// Some launchers measure themselves before the frame has a size and only re-measure
+// on resize, so nudge the frame's width once after each load.
+$('#site-frame').addEventListener('load', () => {
+  const frame = $('#site-frame');
+  for (const delay of [50, 600]) setTimeout(() => { frame.style.width = 'calc(100% - 1px)'; requestAnimationFrame(() => requestAnimationFrame(() => { frame.style.width = ''; })); }, delay);
+});
+document.querySelectorAll('[data-site]').forEach(button => button.addEventListener('click', () => openSite(button.dataset.site)));
+$('#site-home').addEventListener('click', () => view('browser'));
+$('#site-reload').addEventListener('click', () => { const frame = $('#site-frame'); if (frame.dataset.site) frame.src = sites[frame.dataset.site].url; });
+import('./retire.mjs').then(module => module.retireOldReleases()).catch(() => {});
 $('#view-browser').addEventListener('click', () => view('browser'));
 $('#view-games').addEventListener('click', () => view('games'));
 $('#game-library').addEventListener('click', () => view('games'));
