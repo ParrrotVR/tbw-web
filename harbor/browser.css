@@ -32,17 +32,19 @@ svg:not(.hb){width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1
 .hb{display:block;flex-shrink:0;overflow:visible}
 .hb-icon{width:100%;height:100%}
 
-/* ---------- logo motion: a few cycles after load, replayed on hover/tap ---------- */
-.hb-live .hb-wave{animation:hb-wave var(--d,3.2s) linear 4}
-.hb-live .hb-bob{animation:hb-bob 3.6s ease-in-out 3}
-.hb-live .hb-spin{animation:hb-spin 2.6s cubic-bezier(.2,.7,.2,1) 1}
-.hb-live .hb-swing{animation:hb-swing 3.2s ease-in-out 3}
-.hb-live .hb-beam{animation:hb-beam 5s ease-in-out 3}
+/* ---------- logo motion (loops; stops on its own whenever the new tab is hidden) ---------- */
+.hb-live .hb-wave{animation:hb-wave var(--d,3.2s) linear infinite}
+.hb-live .hb-bob{animation:hb-bob 3.8s ease-in-out infinite}
+.hb-live .hb-ripple{animation:hb-ripple 3.8s ease-in-out infinite}
+.hb-live .hb-spin{animation:hb-spin 9s linear infinite}
+.hb-live .hb-swing{animation:hb-swing 3.6s ease-in-out infinite}
+.hb-live .hb-beam{animation:hb-beam 6s ease-in-out infinite}
 @keyframes hb-wave{to{transform:translateX(calc(-1 * var(--p,40px)))}}
-@keyframes hb-bob{0%,100%{transform:none}25%{transform:translateY(-3px) rotate(-3deg)}75%{transform:translateY(4px) rotate(3deg)}}
+@keyframes hb-bob{0%,100%{transform:translateY(-6px) rotate(-6deg)}50%{transform:translateY(6px) rotate(6deg)}}
+@keyframes hb-ripple{0%,100%{transform:translateX(-4px);opacity:.25}50%{transform:translateX(4px);opacity:.5}}
 @keyframes hb-spin{to{transform:rotate(360deg)}}
-@keyframes hb-swing{0%,100%{transform:none}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
-@keyframes hb-beam{0%,100%{transform:none;opacity:1}30%{transform:rotate(-6deg);opacity:.7}70%{transform:rotate(5deg);opacity:.9}}
+@keyframes hb-swing{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes hb-beam{0%,100%{transform:rotate(-6deg);opacity:.75}50%{transform:rotate(5deg);opacity:1}}
 
 /* ---------- chrome ---------- */
 .browser-app{height:100dvh;display:flex;flex-direction:column}
@@ -147,8 +149,8 @@ html[data-theme=harbor] .sea{display:block}
 .sea path{stroke:none}
 .sea-back path{fill:var(--wave1)}
 .sea-front path{fill:var(--wave2)}
-.sea-back{animation:drift 90s linear 2 reverse}
-.sea-front{animation:drift 60s linear 3}
+.sea-back{animation:drift 90s linear infinite reverse}
+.sea-front{animation:drift 60s linear infinite}
 @keyframes drift{to{transform:translateX(-50%)}}
 
 /* ---------- pages, errors ---------- */
@@ -162,7 +164,7 @@ html[data-theme=harbor] .sea{display:block}
 .primary:hover{filter:brightness(1.07)}
 .secondary{border:1px solid var(--line);border-radius:999px;background:var(--surface);padding:9px 15px;font-size:12.5px}
 .secondary:hover{background:var(--hover)}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);padding:12px 20px;border-radius:999px;max-width:calc(100% - 40px);width:max-content;font-size:13px;z-index:50}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);padding:12px 20px;border-radius:999px;max-width:calc(100% - 40px);width:max-content;font-size:13px;z-index:50}
 
 /* ---------- menus, suggestions, dialogs ---------- */
 .browser-menu{position:fixed;right:12px;top:96px;width:272px;padding:7px;background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);z-index:15}
@@ -255,4 +257,4 @@ input[type=search]::-webkit-search-cancel-button{display:none}
   dialog{padding:21px}
   .suggestion small{display:none}
 }
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}

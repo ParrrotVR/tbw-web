@@ -52,13 +52,13 @@ function tower() {
   return `<polygon fill="${INK}" points="-3,200 25,200 20,46 2,46"/>${band(72, 92)}${band(122, 142)}<rect x="7" y="181" width="8" height="19" rx="4" fill="var(--logo-knock)"/><rect x="-3" y="39" width="28" height="8" rx="2.5" fill="${INK}"/><rect x="3" y="19" width="16" height="21" fill="var(--lamp)"/><path d="M11 19V39" stroke="${INK}" stroke-width="2.5"/><path d="M-1 21 L11 6 L23 21 Z" fill="${INK}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/><circle cx="11" cy="4" r="3.5" fill="${INK}"/>`;
 }
 
-// Letters change to sea colour below a gentle water line. The line itself is
-// only drawn out to either side of the word, so it never cuts across a letter.
+// Letters change to sea colour below a gentle water line. The line runs the
+// full width behind the letters, with a few ripples underneath.
 function waterWord(u, y, body, under) {
-  const P = 120, line = wave(y, -160, 760, 3, P), motion = `class="hb-wave" style="--p:${P}px;--d:7s"`;
+  const P = 64, line = wave(y, -160, 780, 4, P), motion = `class="hb-wave" style="--p:${P}px;--d:4s"`;
   return {
-    vb: [-12, 38, 628, 170],
-    inner: `<defs><clipPath id="hu${u}"><path ${motion} d="${line} V-100 H-160 Z"/></clipPath><clipPath id="hd${u}"><path ${motion} d="${line} V400 H-160 Z"/></clipPath><clipPath id="hm${u}"><rect x="-400" y="0" width="388" height="300"/><rect x="580" y="0" width="400" height="300"/></clipPath></defs><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><g clip-path="url(#hm${u})"><path ${motion} d="${line}" fill="none" stroke="var(--sea)" stroke-width="4" stroke-linecap="round"/></g>`,
+    vb: [-12, 38, 628, 184],
+    inner: `<defs><clipPath id="hu${u}"><path ${motion} d="${line} V-100 H-160 Z"/></clipPath><clipPath id="hd${u}"><path ${motion} d="${line} V400 H-160 Z"/></clipPath></defs><path ${motion} d="${line}" fill="none" stroke="var(--sea)" stroke-width="4.5" stroke-linecap="round"/><g clip-path="url(#hu${u})">${body}</g><g clip-path="url(#hd${u})">${under}</g><g class="hb-ripple" stroke="var(--sea)" stroke-width="3.5" stroke-linecap="round" opacity=".45"><path d="M40 214h34M300 214h46M540 214h22"/><path d="M150 219h22M450 219h30"/></g>`,
   };
 }
 
@@ -141,15 +141,7 @@ function mount() {
   const wordmark = document.getElementById('wordmark');
   if (wordmark) {
     wordmark.innerHTML = wordmarkSVG();
-    // Play the motion for a few cycles, then rest. Hover or tap replays it,
-    // but only once the previous run has finished (no mid-motion restarts).
-    const replay = () => {
-      try { if (wordmark.getAnimations({ subtree: true }).some(a => a.playState === 'running')) return; } catch {}
-      wordmark.classList.remove('hb-live'); void wordmark.offsetWidth; wordmark.classList.add('hb-live');
-    };
-    wordmark.addEventListener('pointerenter', replay);
-    wordmark.addEventListener('click', replay);
-    replay();
+    wordmark.classList.add('hb-live');
   }
   for (const slot of document.querySelectorAll('[data-harbor-icon]')) slot.innerHTML = iconSVG(slot.dataset.harborIcon !== 'bare');
 }
