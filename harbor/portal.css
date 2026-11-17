@@ -1,9 +1,13 @@
 /* floating side rail: only on the home page and the games library */
-.portal-dock{position:absolute;right:16px;top:50%;transform:translateY(-50%);z-index:12;display:none;flex-direction:column;align-items:stretch;gap:2px;width:74px;max-height:calc(100% - 28px);overflow-y:auto;scrollbar-width:none;padding:8px;border-radius:24px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
+.portal-dock{position:absolute;right:16px;top:50%;transform:translateY(-50%);z-index:12;display:none;flex-direction:column;align-items:stretch;gap:2px;width:74px;max-height:calc(100% - 24px);overflow-y:auto;scrollbar-width:none;padding:8px;border-radius:24px;border:1px solid var(--line);background:color-mix(in srgb,var(--surface) 88%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:var(--shadow)}
 .portal-dock::-webkit-scrollbar{display:none}
 body[data-view=games] .portal-dock,body[data-view=browser] .viewport:has(>#newtab:not([hidden])) .portal-dock{display:flex}
 .portal-dock svg{stroke:none;fill:none;width:24px;height:24px}
-.portal-dock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:58px;padding:8px 2px;border-radius:16px;color:var(--muted);font-weight:500;font-size:10.5px;line-height:1.1;flex-shrink:0}
+/* buttons shrink to fit the screen height; when one gets too short its label hides and the icon shrinks */
+.portal-dock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;flex:0 1 58px;min-height:34px;padding:2px;border-radius:16px;color:var(--muted);font-weight:500;font-size:10.5px;line-height:1.1;container-type:size}
+.portal-dock hr{flex-shrink:0}
+@container (max-height:47px){.portal-dock button span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}}
+@container (max-height:39px){.portal-dock button svg{width:20px;height:20px}}
 .portal-dock button:hover{color:var(--ink);background:var(--hover)}
 .portal-dock button:hover svg{transform:scale(1.08)}
 .portal-dock button svg{transition:transform .15s}
@@ -70,9 +74,14 @@ body.game-expanded .game-view{position:fixed;inset:0;z-index:10000;width:100%;he
   .newtab-content{width:min(600px,calc(100% - 200px));margin-left:max(24px,calc((100% - 600px - 96px) / 2))}
   .games-view{padding-right:110px}
 }
+@media(max-height:560px){
+  .portal-dock{padding:5px;gap:0;border-radius:20px}
+  .portal-dock hr{margin:2px auto}
+  .newtab-top{padding-right:104px}
+}
 @media(max-width:600px){
   .portal-dock{right:8px;width:62px;padding:6px;border-radius:20px}
-  .portal-dock button{min-height:52px;font-size:9.5px;border-radius:14px}
+  .portal-dock button{flex-basis:52px;font-size:9.5px;border-radius:14px}
   .portal-dock svg{width:22px;height:22px}
   #connection-dot{right:9px;top:8px}
   .newtab-footer{padding-right:84px}
