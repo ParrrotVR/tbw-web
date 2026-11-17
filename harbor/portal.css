@@ -1,12 +1,16 @@
-/* bottom dock */
-.portal-dock{height:68px;min-height:68px;padding:8px 14px calc(8px + env(safe-area-inset-bottom));display:flex;justify-content:center;align-items:center;gap:6px;border-top:1px solid var(--line);background:var(--chrome);z-index:10;flex-shrink:0}
-.portal-dock button{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;min-width:120px;padding:10px 22px;border-radius:999px;color:var(--muted);font-weight:500;font-size:14px}
+/* navigation rail on the right, so the page keeps its full height */
+.browser-app{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr)}
+.browser-app>.chrome{grid-column:1;grid-row:1}
+.browser-app>.viewport{grid-column:1;grid-row:2}
+.portal-dock{grid-column:2;grid-row:1/3;width:78px;display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:10px 8px calc(10px + env(safe-area-inset-bottom));padding-right:calc(8px + env(safe-area-inset-right));border-left:1px solid var(--line);background:var(--chrome);z-index:10;min-height:0}
+.portal-dock button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-height:60px;padding:9px 4px;border-radius:16px;color:var(--muted);font-weight:500;font-size:11.5px}
+.portal-dock button svg{width:21px;height:21px}
 .portal-dock button:hover{color:var(--ink);background:var(--hover)}
 .portal-dock button[aria-current=page]{background:var(--surface2);color:var(--ink)}
 .portal-dock button[aria-current=page] svg{color:var(--accent)}
-#connection-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.55;position:absolute;right:12px;top:12px}
+#connection-dot{width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.55;position:absolute;right:15px;top:11px}
 #connection-dot.connected{background:var(--lamp);opacity:1}
-#connection-dot.connected::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--lamp);animation:buoy 2.8s ease-out 6;will-change:transform,opacity}
+#connection-dot.connected::after{content:"";position:absolute;inset:0;border-radius:50%;background:var(--lamp);animation:buoy 2.8s ease-out infinite;will-change:transform,opacity}
 @keyframes buoy{0%{transform:scale(1);opacity:.7}70%,100%{transform:scale(2.8);opacity:0}}
 body:not([data-view=browser]) .chrome{display:none}
 body:not([data-view=browser]) #newtab,body:not([data-view=browser]) #frames,body:not([data-view=browser]) #loading-error{display:none!important}
@@ -51,9 +55,12 @@ body.game-expanded .game-view{position:fixed;inset:0;z-index:10000;width:100%;he
 #menu-diagnostics{display:none!important}
 .newtab-footer{flex-wrap:wrap;gap:10px}
 
+.browser-menu{right:90px}
 @media(max-width:600px){
-  .portal-dock{gap:2px;padding-left:6px;padding-right:6px}
-  .portal-dock button{min-width:0;flex:1;padding:10px;gap:7px;font-size:13px}
+  .browser-menu{right:70px;max-width:calc(100% - 82px)}
+  .portal-dock{width:60px;gap:4px;padding:8px 5px calc(8px + env(safe-area-inset-bottom))}
+  .portal-dock button{min-height:54px;font-size:10px;gap:4px;border-radius:13px}
+  #connection-dot{right:9px;top:9px}
   .game-card{padding:14px;gap:14px}
   .game-card img{width:128px;height:72px;border-radius:12px}
   .game-card strong{font-size:18px}
