@@ -24,6 +24,9 @@ async function cachedPart(cache, key, part) {
 }
 const local = path => new URL(path, SCOPE).href;
 const networkFetch = self.fetch.bind(self);
+const SPLIT_PATH = /^(?:Build|Content)\//;
+function timeoutSignal(ms) { const controller = new AbortController(); setTimeout(() => controller.abort(), ms); return controller.signal; }
+function withTimeout(promise, ms, message) { let timer; return Promise.race([promise, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), ms); })]).finally(() => clearTimeout(timer)); }
 function htmlPage(response, headOnly) {
   const headers = new Headers(response.headers);
   headers.set("Content-Type", "text/html; charset=utf-8");
@@ -45,12 +48,12 @@ function relativePath(path) {
 }
 
 async function manifest() {
-  if (!manifestPromise) manifestPromise = (async () => {
+  if (!manifestPromise) manifestPromise = withTimeout((async () => {
     const cache = await caches.open(CACHE);
     let response = await cache.match(local("split-manifest.json"));
     const downloaded = !response;
     if (!response) {
-      response = await networkFetch(local("split-manifest.json"), { cache: "no-store" });
+      response = await networkFetch(local("split-manifest.json"), { cache: "no-store", signal: timeoutSignal(20000) });
       if (!response.ok) throw new Error("The split asset manifest could not be downloaded.");
     }
     const copy = downloaded ? response.clone() : null;
@@ -82,7 +85,7 @@ async function manifest() {
     }
     if (copy) await cache.put(local("split-manifest.json"), copy);
     return { value, routes };
-  })().catch(error => { manifestPromise = null; throw error; });
+  })(), 30000, "The game file list did not download. Reload to try again.").catch(error => { manifestPromise = null; throw error; });
   return manifestPromise;
 }
 
@@ -272,13 +275,11 @@ async function splitResponse(request, asset, finish, clientId) {
 }
 
 self.addEventListener("install", event => event.waitUntil((async () => {
-  const limit = (promise, ms) => Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
-  await limit(manifest(), 20000).catch(() => {});
   const cache = await caches.open(CACHE);
   await Promise.allSettled(CONFIG.shell.map(async path => {
     const url = relativePath(path);
     if (await cache.match(url)) return;
-    const response = await networkFetch(url, { cache: "no-cache", signal: AbortSignal.timeout(20000) });
+    const response = await networkFetch(url, { cache: "no-cache", signal: timeoutSignal(20000) });
     if (response.ok) await cache.put(url, response);
   }));
   await self.skipWaiting();
@@ -306,8 +307,7 @@ self.addEventListener("fetch", event => {
   }
   event.waitUntil(completion);
   event.respondWith((async () => {
-    const metadata = await manifest();
-    const asset = metadata.routes.get(url.origin + url.pathname);
+    const asset = SPLIT_PATH.test(url.href.slice(SCOPE.length)) ? (await manifest()).routes.get(url.origin + url.pathname) : null;
     if (asset) return splitResponse(event.request, asset, finish, event.clientId);
     finish();
     const cache = await caches.open(CACHE);
@@ -349,6 +349,7 @@ self.addEventListener("message", event => {
     return;
   }
   if (event.data.type === "TBW_SPLIT_READY") {
+    if (event.data.launcher) { send({ revision: CONFIG.revision }); return; }
     event.waitUntil(manifest().then(() => send({ revision: CONFIG.revision })).catch(error => send({ error: error.message })));
     return;
   }
