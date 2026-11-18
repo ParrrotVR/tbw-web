@@ -272,9 +272,15 @@ async function splitResponse(request, asset, finish, clientId) {
 }
 
 self.addEventListener("install", event => event.waitUntil((async () => {
-  await manifest();
+  const limit = (promise, ms) => Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), ms))]);
+  await limit(manifest(), 20000).catch(() => {});
   const cache = await caches.open(CACHE);
-  await cache.addAll(CONFIG.shell.map(relativePath));
+  await Promise.allSettled(CONFIG.shell.map(async path => {
+    const url = relativePath(path);
+    if (await cache.match(url)) return;
+    const response = await networkFetch(url, { cache: "no-cache", signal: AbortSignal.timeout(20000) });
+    if (response.ok) await cache.put(url, response);
+  }));
   await self.skipWaiting();
 })()));
 
