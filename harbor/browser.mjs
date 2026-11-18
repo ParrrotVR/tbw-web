@@ -242,6 +242,14 @@ async function ensureEngine() {
       }
       async request(...args) {
         if (settings.reduceAds && isFilteredHost(args[0].hostname)) { state.filteredRequests++; return filteredResponse(); }
+        // CrazyGames blocks its game pages unless they're opened from its own player, and
+        // the engine can drop the player's Referer on the way. Restore it when it's missing.
+        if (args[0].hostname.endsWith('.game-files.crazygames.com') && Array.isArray(args[3])) {
+          const referer = args[3].find(([name]) => String(name).toLowerCase() === 'referer');
+          let fromCrazyGames = false;
+          try { fromCrazyGames = !!referer && /(^|\.)crazygames\.com$/.test(new URL(referer[1]).hostname); } catch {}
+          if (!fromCrazyGames) args[3] = [...args[3].filter(([name]) => String(name).toLowerCase() !== 'referer'), ['Referer', 'https://games.crazygames.com/']];
+        }
         return assets.request(super.request.bind(this), ...args);
       }
     }
