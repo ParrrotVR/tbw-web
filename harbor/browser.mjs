@@ -10,19 +10,24 @@ import { iconSVG, fillSiteIcon } from './brand.mjs';
 const $ = selector => document.querySelector(selector);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
 const write = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
-const settings = { search: 'bing', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
+const settings = { search: 'yahoo', appearance: 'harbor', restoreTabs: true, reduceAds: true, ...read('harbor:settings', {}) };
 if (!settings.themeV2) { if (settings.appearance === 'light') settings.appearance = 'harbor'; settings.themeV2 = true; }
 if (!['harbor', 'light', 'dark', 'system'].includes(settings.appearance)) settings.appearance = 'harbor';
 if (!settings.searchV2) { if (settings.search === 'google') settings.search = 'duckduckgo'; settings.searchV2 = true; }
 // DuckDuckGo stalls requests from the Harbor server's cloud network; move off it once.
 if (!settings.searchV3) { if (['duckduckgo', 'ddglite'].includes(settings.search)) settings.search = 'bing'; settings.searchV3 = true; }
-if (!SEARCH_ENGINES[settings.search]) settings.search = 'bing';
+// Yahoo became the default after Bing; move Bing users over once.
+if (!settings.searchV4) { if (settings.search === 'bing') settings.search = 'yahoo'; settings.searchV4 = true; }
+if (!SEARCH_ENGINES[settings.search]) settings.search = 'yahoo';
 let bookmarks = read('harbor:bookmarks', [
   { title: 'MCdle', url: 'https://www.mcdle.net/en_gb' },
   { title: 'Krillion', url: 'https://playdaily.org/krillion' },
   { title: 'digdig.io', url: 'https://digdig.io/' },
+  { title: 'CrazyGames', url: 'https://www.crazygames.com/' },
 ]);
 if (!Array.isArray(bookmarks)) bookmarks = [];
+// Add the CrazyGames bookmark once for people whose bookmarks were saved before it existed.
+if (!settings.bookmarksV2) { if (!bookmarks.some(item => /(^|\.)crazygames\.com$/.test((() => { try { return new URL(item.url).hostname; } catch { return ''; } })()))) { bookmarks.push({ title: 'CrazyGames', url: 'https://www.crazygames.com/' }); write('harbor:bookmarks', bookmarks); } settings.bookmarksV2 = true; }
 let visited = read('harbor:history', []); if (!Array.isArray(visited)) visited = [];
 const assets = new AssetCache();
 const state = { tabs: [], activeId: null, controller: null, health: null, connections: [], checks: [], fixture: null, transport: null, currentUrl: '', frame: null, cache: assets, filteredRequests: 0 };
