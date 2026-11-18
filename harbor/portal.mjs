@@ -1,5 +1,5 @@
 import './browser.mjs';
-import { getRelay, saveRelay, portalBase } from './relay-settings.mjs';
+import { getRelay, saveRelay, forgetKey, portalBase } from './relay-settings.mjs';
 import { createGameRelay } from './game-relay.mjs';
 const $ = selector => document.querySelector(selector);
 let gameFrame = null;
@@ -228,7 +228,7 @@ $('#connection-form').addEventListener('submit', async event => {
     if (active?.url) window.harbor.launch(active.url);
   } catch (error) {
     if (previous.address) saveRelay(previous.mode, previous.address, previous.key);
-    else { localStorage.removeItem('harbor:relay'); sessionStorage.removeItem('harbor:relay-key'); }
+    else { localStorage.removeItem('harbor:relay'); forgetKey(); }
     status.textContent = error.message || 'The connection could not be established.';
   } finally { submit.disabled = false; }
 });
