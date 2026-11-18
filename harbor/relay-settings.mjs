@@ -11,17 +11,32 @@ export function normalizeRelay(mode, value) {
   if (url.pathname !== '/' || url.search) throw new Error('Use the server root address, without a page path.');
   return url.origin;
 }
+// The key is kept on this device so it survives reloads; iPad Safari wipes session
+// storage whenever it reloads a tab to free memory. Older versions kept it per session.
+function savedKey() {
+  let key = '';
+  try { key = localStorage.getItem('harbor:relay-key') || ''; } catch {}
+  if (!key) try {
+    key = sessionStorage.getItem('harbor:relay-key') || '';
+    if (key) { localStorage.setItem('harbor:relay-key', key); sessionStorage.removeItem('harbor:relay-key'); }
+  } catch {}
+  return key;
+}
+export function forgetKey() {
+  try { localStorage.removeItem('harbor:relay-key'); } catch {}
+  try { sessionStorage.removeItem('harbor:relay-key'); } catch {}
+}
 export function getRelay() {
   try {
     const saved = JSON.parse(localStorage.getItem('harbor:relay') || '{}');
     const mode = saved.mode === 'harbor' ? 'harbor' : 'wisp';
-    return { mode, address: saved.address ? normalizeRelay(mode, saved.address) : '', key: sessionStorage.getItem('harbor:relay-key') || '' };
+    return { mode, address: saved.address ? normalizeRelay(mode, saved.address) : '', key: savedKey() };
   } catch { return { mode: 'wisp', address: '', key: '' }; }
 }
 export function saveRelay(mode, address, key = '') {
   const next = { mode: mode === 'harbor' ? 'harbor' : 'wisp', address: normalizeRelay(mode, address) };
   localStorage.setItem('harbor:relay', JSON.stringify(next));
-  if (key) sessionStorage.setItem('harbor:relay-key', key); else sessionStorage.removeItem('harbor:relay-key');
+  if (key) localStorage.setItem('harbor:relay-key', key); else forgetKey();
   return getRelay();
 }
 export async function relayFetch(path, options = {}, override) {
