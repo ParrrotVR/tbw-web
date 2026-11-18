@@ -253,3 +253,16 @@ if (window !== top) {
   try { top.addEventListener('resize', fitFrames); top.addEventListener('orientationchange', () => setTimeout(fitFrames, 300)); } catch {}
   window.addEventListener('pagehide', () => { try { top.removeEventListener('resize', fitFrames); } catch {} });
 }
+// Full-page mode switch, read by the launcher. It stays on unless turned off here.
+{
+  const toggle = $('#full-page');
+  try { toggle.checked = localStorage.getItem('harbor:direct') !== 'off' && localStorage.getItem('harbor:direct-works') !== '0'; } catch { toggle.checked = true; }
+  toggle.addEventListener('change', () => {
+    try {
+      if (toggle.checked) {
+        localStorage.removeItem('harbor:direct'); localStorage.removeItem('harbor:direct-pending');
+        if (localStorage.getItem('harbor:direct-works') === '0') localStorage.removeItem('harbor:direct-works');
+      } else localStorage.setItem('harbor:direct', 'off');
+    } catch {}
+  });
+}
