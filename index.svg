@@ -8,7 +8,7 @@
     </div>
   </foreignObject>
   <script><![CDATA[
-self.TBWSplitConfig = {"revision":"2d01a827c63ee4b350ac1c575489d097","assetBase":"https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@6615e9648f11c732e81924ff379b97c8fafd6a3c/","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json","harbor/browser.html","harbor/browser.css","harbor/portal.css","harbor/portal.mjs","harbor/browser.mjs","harbor/relay-settings.mjs","harbor/http-client.mjs","harbor/socket-client.mjs","harbor/navigation.mjs","harbor/browser-plugin.mjs","harbor/asset-cache.mjs","harbor/content-filter.mjs","harbor/stream-bridge.js","harbor/icons.svg","harbor/icon.svg","harbor/wizard.svg","harbor/geometry-dash.svg","harbor/game-relay.mjs","harbor/brand.mjs","harbor/fonts/outfit-latin-wght.woff2","harbor/fonts/jetbrains-mono-latin-400.woff2"],"portalPage":"harbor/browser.html"};
+self.TBWSplitConfig = {"revision":"26f85ed9206ec2ce7a1b369c2bba6e86","assetBase":"https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@6615e9648f11c732e81924ff379b97c8fafd6a3c/","shell":["index.html","index.svg","Build/UnityLoader.js","Build/web-ipad-compact.json","loader-fixes.js","offline-ui.js","mobile-support.js","save-support.js","view-support.js","split-loader.js","split-config.js","split-manifest.json","offline-manifest.json","harbor/browser.html","harbor/browser.css","harbor/portal.css","harbor/portal.mjs","harbor/browser.mjs","harbor/relay-settings.mjs","harbor/http-client.mjs","harbor/socket-client.mjs","harbor/navigation.mjs","harbor/browser-plugin.mjs","harbor/asset-cache.mjs","harbor/content-filter.mjs","harbor/stream-bridge.js","harbor/icons.svg","harbor/icon.svg","harbor/wizard.svg","harbor/geometry-dash.svg","harbor/game-relay.mjs","harbor/brand.mjs","harbor/fonts/outfit-latin-wght.woff2","harbor/fonts/jetbrains-mono-latin-400.woff2"],"portalPage":"harbor/browser.html"};
 self.TBWSplitLauncher = true;
 (function (root) {
   "use strict";
@@ -26,6 +26,16 @@ self.TBWSplitLauncher = true;
       Promise.resolve(promise).then(function (value) { clearTimeout(timer); resolve(value); }, function (error) { clearTimeout(timer); reject(error); });
     });
   }
+  // Removes this release's worker and cached page files. Game downloads and saves stay.
+  root.TBWRepair = function () {
+    var scope = new URL("./", document.baseURI).href;
+    var prefix = "tbw-split:" + new URL(scope).pathname + ":";
+    return navigator.serviceWorker.getRegistrations().then(function (list) {
+      return Promise.all(list.filter(function (item) { return item.scope === scope; }).map(function (item) { return item.unregister(); }));
+    }).then(function () { return caches.keys(); }).then(function (names) {
+      return Promise.all(names.filter(function (name) { return name.indexOf(prefix) === 0 && !/:parts$/.test(name); }).map(function (name) { return caches.delete(name); }));
+    });
+  };
   root.TBWSplitReady = (async function () {
     progress(0, "Step 1 of 3: connecting the download worker…");
     if (!config || !config.revision) throw new Error("The split-file configuration is missing.");
@@ -98,9 +108,29 @@ self.TBWSplitLauncher = true;
       worker.postMessage({ type: "TBW_SPLIT_READY" }, [channel.port2]);
     });
     root.TBWSplitWorker = worker;
+    try { sessionStorage.removeItem("harbor:repaired"); } catch (_) {}
     progress(3, launcher ? "Opening Harbor…" : "Starting the game…");
   })().catch(function (error) {
+    var autoRepair = false;
+    try {
+      if (launcher && sessionStorage.getItem("harbor:repaired") !== config.revision) {
+        sessionStorage.setItem("harbor:repaired", config.revision);
+        autoRepair = sessionStorage.getItem("harbor:repaired") === config.revision;
+      }
+    } catch (_) {}
+    if (autoRepair) {
+      progress(1, "Repairing Harbor…");
+      root.TBWRepair().then(function () { location.reload(); }, function () { location.reload(); });
+      return new Promise(function () {});
+    }
     var label = document.getElementById("status");
+    if (label && launcher && !document.getElementById("repair-harbor")) {
+      var repair = document.createElementNS("http://www.w3.org/1999/xhtml", "button");
+      repair.id = "repair-harbor"; repair.type = "button"; repair.textContent = "Repair Harbor";
+      repair.setAttribute("style", "font:16px system-ui;padding:10px 18px;border-radius:999px;border:0;background:#ff6b3d;color:#2a0f05;font-weight:600;margin-top:4px");
+      repair.onclick = function () { repair.disabled = true; repair.textContent = "Repairing…"; root.TBWRepair().then(function () { location.reload(); }, function () { location.reload(); }); };
+      label.parentNode.insertBefore(repair, label.nextSibling);
+    }
     if (label) {
       label.hidden = false;
       label.setAttribute("role", "alert");
