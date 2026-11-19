@@ -258,3 +258,27 @@ input[type=search]::-webkit-search-cancel-button{display:none}
   .suggestion small{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important}}
+
+/* ---------- developer tools ---------- */
+.devtools-button.has-errors{position:relative}
+.devtools-button.has-errors::after{content:"";position:absolute;top:7px;right:7px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.devtools-button[aria-pressed=true]{color:var(--accent);background:var(--soft)}
+.devtools{flex:0 0 min(44dvh,400px);display:flex;flex-direction:column;min-height:0;background:var(--surface);border-top:1px solid var(--line)}
+.devtools[hidden]{display:none}
+.devtools-bar{display:flex;align-items:center;gap:6px;padding:5px 8px;border-bottom:1px solid var(--line);flex-shrink:0}
+.devtools-tabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.devtools-tabs button{padding:6px 11px;border-radius:9px;color:var(--muted);font-size:13px;white-space:nowrap}
+.devtools-tabs button[aria-selected=true]{color:var(--ink);background:var(--surface2);font-weight:600}
+.devtools-tabs b{color:var(--accent);font-weight:700;margin-left:2px}
+.devtools-tabs i{font-style:normal;color:var(--muted);margin-left:2px;font-size:11px}
+.devtools-filter{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);white-space:nowrap}
+.devtools-pane{flex:1;min-height:0;overflow:auto;font-family:var(--mono);font-size:11.5px;line-height:1.45;-webkit-overflow-scrolling:touch}
+.dev-row{display:flex;gap:10px;padding:4px 12px;border-bottom:1px solid var(--line);align-items:flex-start}
+.dev-row .dev-text{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--ink)}
+.dev-row .dev-time,.dev-row .dev-method{color:var(--muted);white-space:nowrap;flex-shrink:0}
+.dev-row .dev-level,.dev-row .dev-status{flex:0 0 58px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dev-row .dev-key{flex:0 0 110px;color:var(--muted)}
+.dev-row.level-error{background:rgba(255,80,60,.1)}.dev-row.level-error .dev-level,.dev-row.level-error .dev-status{color:#ff7a66}
+.dev-row.level-warn{background:rgba(255,200,80,.08)}.dev-row.level-warn .dev-level,.dev-row.level-warn .dev-status{color:var(--lamp)}
+.dev-empty{color:var(--muted);padding:16px 12px;margin:0;font-family:Outfit,ui-sans-serif,system-ui,sans-serif;font-size:13px}
+@media(max-width:640px){.devtools-filter{display:none}.dev-row .dev-time{display:none}.dev-row .dev-key{flex-basis:80px}}
