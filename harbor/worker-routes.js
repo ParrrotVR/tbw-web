@@ -16,8 +16,12 @@
         const timer = setTimeout(() => { pending.delete(check); reject(new Error('The browser tab disconnected. Return to Browser and open the address again.')); }, 10000);
         pending.add(check); check();
       });
-      const notify = self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
-        for (const client of clients) if (client.url.startsWith(scope)) client.postMessage({ $harbor$revive: { pathname } });
+      // Full-page mode shows the permanent link in the address bar, outside this scope, so
+      // also notify every window this worker controls, not only those whose URL is in scope.
+      const notify = Promise.all([self.clients.matchAll({ type: 'window' }), self.clients.matchAll({ type: 'window', includeUncontrolled: true })]).then(([controlled, all]) => {
+        const targets = new Map(controlled.map(client => [client.id, client]));
+        for (const client of all) if (client.url.startsWith(scope)) targets.set(client.id, client);
+        for (const client of targets.values()) client.postMessage({ $harbor$revive: { pathname } });
       });
       reconnecting.set(routePrefix, Promise.all([task, notify]).finally(() => reconnecting.delete(routePrefix)));
     }
