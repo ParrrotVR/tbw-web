@@ -217,6 +217,17 @@ function keydown(event) {
 }
 document.addEventListener('keydown', keydown);
 
+// Resolves once the registration has an active worker (what serviceWorker.ready means,
+// without depending on the page address).
+function activeWorker(registration) {
+  return new Promise(resolve => {
+    const check = () => { if (registration.active) resolve(registration.active); };
+    const watch = worker => worker?.addEventListener('statechange', check);
+    watch(registration.installing); watch(registration.waiting);
+    registration.addEventListener('updatefound', () => watch(registration.installing));
+    check();
+  });
+}
 async function ensureEngine() {
   if (enginePromise) return enginePromise;
   enginePromise = (async () => {
@@ -236,8 +247,14 @@ async function ensureEngine() {
     if (!window.$scramjetController) await loadScript(new URL('vendor/controller.api.js', portalBase).href);
     if (relay.mode === 'wisp' && !window.EpoxyTransport) await loadScript(new URL('vendor/epoxy.js', portalBase).href);
     const workerURL = new URL('../sw.js', portalBase);
-    const registration = await bounded(navigator.serviceWorker.register(workerURL.href, { scope: new URL('../', portalBase).pathname, updateViaCache: 'none' }), 30000, 'The browser worker did not register.');
-    await bounded(navigator.serviceWorker.ready, 15000, 'The browser worker is not ready.');
+    // Look the worker up by its own scope, never by the page address. Full-page mode shows
+    // the permanent link in the address bar, which is outside the worker's scope, and Safari
+    // then never resolves navigator.serviceWorker.ready ("The browser worker is not ready").
+    const scope = new URL('../', portalBase).href;
+    let registration = await navigator.serviceWorker.getRegistration(scope).catch(() => null);
+    if (!registration || registration.scope !== scope)
+      registration = await bounded(navigator.serviceWorker.register(workerURL.href, { scope: new URL(scope).pathname, updateViaCache: 'none' }), 30000, 'The browser worker did not register.');
+    await bounded(activeWorker(registration), 15000, 'The browser worker is not ready.');
     if (!navigator.serviceWorker.controller) await bounded(new Promise(resolve => navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true })), 12000, 'Reload the SVG to attach the browser worker.');
     const Base = relay.mode === 'wisp' ? EpoxyTransport.default : NativeHttpTransport;
     class HarborTransport extends Base {
