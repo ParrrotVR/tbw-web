@@ -241,11 +241,14 @@ async function ensureEngine() {
     // it is off, use the backup for this visit without changing the saved settings.
     const backup = getBackupRelay();
     if (relay.mode === 'harbor' && backup && backup.address !== relay.address) {
-      const reachable = await bounded(relayFetch('/api/health'), 10000, 'timeout').then(response => response.ok, () => false);
-      if (!reachable) {
+      const problem = await bounded(relayFetch('/api/health'), 10000, 'no answer within 10 seconds')
+        .then(response => response.ok ? '' : response.status === 401 ? 'it rejected the access key' : response.status === 403 ? 'it rejected this page' : 'it answered with error ' + response.status,
+          error => /no answer/.test(error.message) ? error.message : 'this network could not reach it (' + (error.message || 'connection failed') + ')');
+      if (problem) {
+        const main = relay.address;
         useRelayForSession(backup); relay = backup;
-        devtools.note('warn', 'Main Harbor server did not answer; using the backup server ' + backup.address);
-        notice('Your main server is offline. Using the backup server.');
+        devtools.note('warn', `Main Harbor server ${main} unavailable: ${problem}. Using the backup server ${backup.address}.`);
+        notice(`Your main server is unavailable: ${problem}. Using the backup server.`);
       }
     }
     if (relay.mode === 'harbor') {
