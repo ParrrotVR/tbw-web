@@ -1,4 +1,9 @@
-const CACHE_NAME = 'harbor-public-assets-v1';
+const CACHE_NAME = 'harbor-public-assets-v2';
+// v1 could hold Cloudflare challenge scripts; replaying those makes checks fail
+// (e.g. "incorrect time"). Drop it once.
+try { caches.delete('harbor-public-assets-v1').catch(() => {}); } catch {}
+// Bot checks must always come fresh from the network.
+const neverCache = url => /(^|\.)challenges\.cloudflare\.com$/.test(url.hostname) || url.pathname.startsWith('/cdn-cgi/') || /(^|\.)(hcaptcha\.com|recaptcha\.net)$/.test(url.hostname) || /\/recaptcha\//.test(url.pathname);
 const MAX_BYTES = 8 * 1024 * 1024;
 const extension = /\.(?:js|mjs|css|wasm|woff2?|ttf|otf|png|jpe?g|webp|avif|gif|svg|ico)(?:$)/i;
 export function cacheLifetime(headers, status = 200) {
@@ -18,6 +23,7 @@ export class AssetCache {
   pending = new Set();
   async clear() { await Promise.allSettled([...this.pending]); await caches.delete(CACHE_NAME); this.stats = { hits: 0, misses: 0, writes: 0, bytes: 0 }; }
   async request(transport, url, method, body, rawHeaders, signal) {
+    if (neverCache(url)) return transport(url, method, body, rawHeaders, signal);
     const headers = new Headers(rawHeaders);
     const eligible = method === 'GET' && (extension.test(url.pathname) || /\/_next\/image$/.test(url.pathname)) && !headers.has('authorization') && !headers.has('range') && !/no-cache|no-store/i.test(headers.get('cache-control') || '') && 'caches' in globalThis;
     if (!eligible) return transport(url, method, body, rawHeaders, signal);

@@ -107,7 +107,9 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
     res.once('close', () => { if (!res.writableFinished) abort(); });
     const timer = setTimeout(abort, 30000);
     let response;
-    try { response = await (await impitFor(browserProfile(headers['user-agent']))).fetch(url.href, { method: config.method, headers: outgoing, body, redirect: 'manual', signal: controller.signal }); }
+    // The page says which engine really runs it (iPad Firefox/Chrome run Safari's engine).
+    const profile = config.engine === 'webkit' ? 'ios18' : browserProfile(headers['user-agent']);
+    try { response = await (await impitFor(profile)).fetch(url.href, { method: config.method, headers: outgoing, body, redirect: 'manual', signal: controller.signal }); }
     finally { clearTimeout(timer); }
     record(response.status, 'browser-tls', response.headers.get('cf-mitigated'));
     if (process.env.HARBOR_DEBUG) console.log('Remote', response.status, config.method, url.host + url.pathname, '(browser TLS)');
