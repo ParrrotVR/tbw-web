@@ -102,7 +102,7 @@ export function createDevtools({ state, $, active, notice }) {
     return [
       ['Address', tab?.url || 'New tab'], ['Title', title], ['Status', tab?.error ? 'Error: ' + tab.error : tab?.loading ? 'Loading' : 'Loaded'],
       ['Frames inside', all.length ? all.join('\n') : 'none'],
-      ['Connection', `${relay.mode === 'harbor' ? 'Harbor server' : 'Wisp'} ${relay.address || '(not set)'}${relay.key ? ' · key saved' : ''}`],
+      ['Connection', `${relay.mode === 'harbor' ? 'Harbor server' : 'Wisp'} ${relay.address || '(not set)'}${relay.key ? ' · key saved' : ''}${state.relayInUse?.backup ? ` · BACKUP (main ${state.relayInUse.main} unavailable: ${state.relayInUse.reason})` : ''}`],
       ['Engine', $('#engine-status')?.textContent || ''], ['Browser', navigator.userAgent],
       ['Screen', `${innerWidth}×${innerHeight} @${devicePixelRatio}x`],
       ['Harbor build', String(new URL('./', import.meta.url).pathname.match(/@([0-9a-f]{7})/)?.[1] || 'local')],

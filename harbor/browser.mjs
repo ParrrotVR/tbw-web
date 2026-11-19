@@ -217,6 +217,15 @@ function keydown(event) {
 }
 document.addEventListener('keydown', keydown);
 
+// A friendly name for a relay address, for the status line and Connection screen.
+export function serverName(relay) {
+  if (!relay?.address) return 'no server';
+  if (relay.mode === 'wisp') return 'Wisp';
+  const host = new URL(relay.address).hostname;
+  if (host.endsWith('.ts.net')) return 'your PC (' + host.split('.')[0] + ')';
+  if (host.endsWith('.onrender.com')) return 'Render';
+  return host;
+}
 // Resolves once the registration has an active worker (what serviceWorker.ready means,
 // without depending on the page address).
 function activeWorker(registration) {
@@ -240,6 +249,7 @@ async function ensureEngine() {
     // With a backup saved (e.g. Render behind a PC server), give the main server 10 s; if
     // it is off, use the backup for this visit without changing the saved settings.
     const backup = getBackupRelay();
+    state.relayInUse = { address: relay.address, mode: relay.mode, backup: false, reason: '' };
     if (relay.mode === 'harbor' && backup && backup.address !== relay.address) {
       const problem = await bounded(relayFetch('/api/health'), 10000, 'no answer within 10 seconds')
         .then(response => response.ok ? '' : response.status === 401 ? 'it rejected the access key' : response.status === 403 ? 'it rejected this page' : 'it answered with error ' + response.status,
@@ -247,6 +257,7 @@ async function ensureEngine() {
       if (problem) {
         const main = relay.address;
         useRelayForSession(backup); relay = backup;
+        state.relayInUse = { address: backup.address, mode: backup.mode, backup: true, reason: problem, main };
         devtools.note('warn', `Main Harbor server ${main} unavailable: ${problem}. Using the backup server ${backup.address}.`);
         notice(`Your main server is unavailable: ${problem}. Using the backup server.`);
       }
@@ -302,7 +313,7 @@ async function ensureEngine() {
       scramjetConfig: { flags: { syncxhr: false, sourcemaps: false, captureErrors: false, rewriterLogs: false, debugTrampolines: false } },
     });
     await bounded(state.controller.wait(), 25000, 'The browser engine did not finish starting.');
-    $('#engine-status').textContent = 'Browser connected'; window.harbor.ready = true;
+    $('#engine-status').textContent = 'Browser connected via ' + serverName(state.relayInUse) + (state.relayInUse.backup ? ' (backup)' : ''); window.harbor.ready = true;
     return state.controller;
   })().catch(error => { enginePromise = null; $('#engine-status').textContent = 'Browser connection needed'; window.harbor.bootError = error.message; throw error; });
   return enginePromise;
@@ -429,7 +440,7 @@ $('#export').addEventListener('click', async () => {
   } catch (error) { notice(error.message); }
 });
 
-window.harbor = { ready: false, state, settings, launch, newTab, closeTab, activateTab, reopenTab, runChecks, normalize: resolveInput, ensureEngine };
+window.harbor = { ready: false, state, settings, serverName, launch, newTab, closeTab, activateTab, reopenTab, runChecks, normalize: resolveInput, ensureEngine };
 setPreferences(); renderBookmarks();
 $('#date-label').textContent = new Intl.DateTimeFormat(undefined, { weekday: 'long', month: 'long', day: 'numeric' }).format(new Date());
 const saved = settings.restoreTabs ? read('harbor:tabs', null) : null;

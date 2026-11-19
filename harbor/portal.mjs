@@ -1,5 +1,5 @@
 import './browser.mjs';
-import { getRelay, saveRelay, forgetKey, portalBase, getBackupRelay, saveBackupRelay, setupLinkResult } from './relay-settings.mjs';
+import { getRelay, saveRelay, forgetKey, portalBase, getBackupRelay, saveBackupRelay, setupLinkResult, useRelayForSession } from './relay-settings.mjs';
 import { createGameRelay } from './game-relay.mjs';
 const $ = selector => document.querySelector(selector);
 let gameFrame = null;
@@ -196,6 +196,14 @@ function connectionFields() {
   $('#relay-address').placeholder = wisp ? 'wss://your-relay.example/wisp/' : 'https://your-harbor-server.example';
   $('#relay-key-label').hidden = false;
 }
+function showActive() {
+  const inUse = window.harbor?.state?.relayInUse;
+  $('#relay-active-note').hidden = !inUse || !window.harbor.ready;
+  $('#relay-retry-main').hidden = !inUse?.backup;
+  if (inUse) $('#relay-active-text').textContent = inUse.backup
+    ? `Right now Harbor is using the backup (${window.harbor.serverName(inUse)}) because your main server was unavailable: ${inUse.reason}.`
+    : `Right now Harbor is connected via ${window.harbor.serverName(inUse)}.`;
+}
 function showBackup() {
   const backup = getBackupRelay();
   $('#relay-backup-note').hidden = !backup;
@@ -208,12 +216,14 @@ function openConnection() {
   $('#relay-key').value = relay.key;
   $('#connection-status').textContent = relay.address ? 'Update your connection below.' : 'Add a Wisp address or your Harbor server address. Games are ready now.';
   showBackup();
+  showActive();
   connectionFields();
   if (!dialog.open) dialog.showModal();
 }
 for (const id of ['connect-browser', 'connection-button']) $('#' + id).addEventListener('click', openConnection);
 window.addEventListener('harbor:connect-needed', openConnection);
 $('#relay-backup-remove').addEventListener('click', () => { saveBackupRelay(null); showBackup(); });
+$('#relay-retry-main').addEventListener('click', async () => { useRelayForSession(null); await closeGame(); location.reload(); });
 // A setup link from the Harbor Server launcher was opened: say what happened.
 if (setupLinkResult) {
   const message = setupLinkResult.error || `Connected to ${new URL(setupLinkResult.address).hostname}.` + (setupLinkResult.backup ? ' Your previous server is kept as a backup.' : '');

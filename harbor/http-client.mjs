@@ -1,6 +1,10 @@
 import { relayFetch } from './relay-settings.mjs';
 // The relay envelope carries raw duplicate headers without putting cookies or
 // destination URLs in local request URLs. Binary bodies remain streaming.
+// Every iPhone/iPad browser runs Safari's engine, even when it labels itself desktop
+// Firefox or Chrome ("request desktop site"). Its real network traffic then looks like
+// Safari, so the relay should too. GestureEvent and window.webkit exist only there.
+const webkitEngine = typeof window.GestureEvent === 'function' || !!(window.webkit && window.webkit.messageHandlers);
 export class NativeHttpTransport {
   ready = false;
   async init() { this.ready = true; }
@@ -10,9 +14,9 @@ export class NativeHttpTransport {
     // falls back to a Chrome identity. On Safari and Firefox that contradicts what the
     // page's own scripts report, and Cloudflare re-challenges forever. Desktop Chrome
     // already matches the fallback, so only other browsers send their own.
-    if (Array.isArray(headers) && !/Chrome\//.test(navigator.userAgent) && !headers.some(([name]) => String(name).toLowerCase() === 'user-agent'))
+    if (Array.isArray(headers) && (webkitEngine || !/Chrome\//.test(navigator.userAgent)) && !headers.some(([name]) => String(name).toLowerCase() === 'user-agent'))
       headers = [...headers, ['User-Agent', navigator.userAgent]];
-    const metadata = JSON.stringify({ url: url.href, method, headers });
+    const metadata = JSON.stringify({ url: url.href, method, headers, ...(webkitEngine ? { engine: 'webkit' } : {}) });
     const bytes = new TextEncoder().encode(metadata);
     const encoded = btoa(Array.from(bytes, byte => String.fromCharCode(byte)).join(''));
     // Upload streaming is inconsistent across browsers. Buffer uploads only;
