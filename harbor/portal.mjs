@@ -1,5 +1,5 @@
 import './browser.mjs';
-import { getRelay, saveRelay, forgetKey, portalBase } from './relay-settings.mjs';
+import { getRelay, saveRelay, forgetKey, portalBase, getBackupRelay, saveBackupRelay, setupLinkResult } from './relay-settings.mjs';
 import { createGameRelay } from './game-relay.mjs';
 const $ = selector => document.querySelector(selector);
 let gameFrame = null;
@@ -196,17 +196,29 @@ function connectionFields() {
   $('#relay-address').placeholder = wisp ? 'wss://your-relay.example/wisp/' : 'https://your-harbor-server.example';
   $('#relay-key-label').hidden = false;
 }
+function showBackup() {
+  const backup = getBackupRelay();
+  $('#relay-backup-note').hidden = !backup;
+  if (backup) $('#relay-backup-text').textContent = `Backup when this server is offline: ${backup.address}`;
+}
 function openConnection() {
   const relay = getRelay();
   $('#relay-mode').value = relay.mode;
   $('#relay-address').value = relay.address;
   $('#relay-key').value = relay.key;
   $('#connection-status').textContent = relay.address ? 'Update your connection below.' : 'Add a Wisp address or your Harbor server address. Games are ready now.';
+  showBackup();
   connectionFields();
   if (!dialog.open) dialog.showModal();
 }
 for (const id of ['connect-browser', 'connection-button']) $('#' + id).addEventListener('click', openConnection);
 window.addEventListener('harbor:connect-needed', openConnection);
+$('#relay-backup-remove').addEventListener('click', () => { saveBackupRelay(null); showBackup(); });
+// A setup link from the Harbor Server launcher was opened: say what happened.
+if (setupLinkResult) {
+  const message = setupLinkResult.error || `Connected to ${new URL(setupLinkResult.address).hostname}.` + (setupLinkResult.backup ? ' Your previous server is kept as a backup.' : '');
+  const toast = $('#notice'); toast.textContent = message; toast.hidden = false; setTimeout(() => { toast.hidden = true; }, 8000);
+}
 $('#relay-mode').addEventListener('change', connectionFields);
 $('#connection-dismiss').addEventListener('click', () => dialog.close());
 $('#connection-form').addEventListener('submit', async event => {

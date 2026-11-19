@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connect Harbor</title>
+<style>
+  :root{--page:#0e2738;--surface:#14344a;--ink:#f3eada;--muted:#97aebb;--accent:#ff6b3d;--line:rgba(240,230,210,.14)}
+  html,body{margin:0;background:var(--page);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+  main{max-width:620px;margin:0 auto;padding:32px 16px 48px}
+  h1{font-size:28px;font-weight:600;margin:0 0 6px}
+  p{color:var(--muted);margin:0 0 18px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  #qr{background:#fff;padding:12px;border-radius:12px;line-height:0}
+  .steps{flex:1;min-width:220px}
+  ol{margin:0;padding-left:20px}li{margin:6px 0}
+  .row{margin-top:18px;font-size:14px}
+  code{font-family:ui-monospace,Consolas,monospace;background:rgba(0,0,0,.25);padding:2px 6px;border-radius:6px;word-break:break-all}
+  button{margin-top:16px;background:var(--accent);color:#2a0f05;border:0;border-radius:999px;padding:10px 18px;font:600 15px system-ui;cursor:pointer}
+  .warn{font-size:13px;margin-top:22px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Connect your iPad to this PC</h1>
+  <p>Harbor Server is running here. Use this once on each device; Harbor remembers it.</p>
+  <div class="card">
+    <div id="qr"></div>
+    <div class="steps">
+      <ol>
+        <li>Open the Camera on the iPad and point it at the code.</li>
+        <li>Tap the link that appears. It opens Harbor in Safari.</li>
+        <li>Harbor says "Connected to &hellip;". Your old server stays as a backup.</li>
+      </ol>
+      <button id="copy" type="button">Copy setup link</button>
+    </div>
+  </div>
+  <div class="row">Or enter it by hand in Harbor &rarr; Connection &rarr; Harbor server:<br>Address <code>__ADDRESS__</code><br>Key <code>__KEY__</code></div>
+  <p class="warn">Keep this page and the link private: anyone with them can browse through your PC's internet connection. To change the key, delete <code>%LOCALAPPDATA%\Harbor Server\access-key.txt</code> and start the server again.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  var link = "__SETUP_LINK__";
+  try { new QRCode(document.getElementById('qr'), { text: link, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L }); }
+  catch (e) { document.getElementById('qr').textContent = 'QR code unavailable; copy the link instead.'; }
+  document.getElementById('copy').onclick = function () {
+    navigator.clipboard.writeText(link).then(function () { document.getElementById('copy').textContent = 'Copied'; }, function () { prompt('Copy this link:', link); });
+  };
+</script>
+</body>
+</html>
