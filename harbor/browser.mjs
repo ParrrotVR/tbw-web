@@ -6,6 +6,7 @@ import { browserPlugin } from './browser-plugin.mjs';
 import { NativeHttpTransport } from './http-client.mjs';
 import { isFilteredHost, filteredResponse } from './content-filter.mjs';
 import { iconSVG, fillSiteIcon } from './brand.mjs';
+import { createDevtools } from './devtools.mjs';
 
 const $ = selector => document.querySelector(selector);
 const read = (key, fallback) => { try { return JSON.parse(localStorage.getItem(key)) ?? fallback; } catch { return fallback; } };
@@ -60,6 +61,7 @@ navigator.serviceWorker?.addEventListener('message', event => {
 });
 const active = () => state.tabs.find(tab => tab.id === state.activeId);
 const icon = name => { const element = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); const use = document.createElementNS(element.namespaceURI, 'use'); use.setAttribute('href', new URL('icons.svg#', portalBase).href + '' + name); element.append(use); return element; };
+const devtools = createDevtools({ state, $, active, notice });
 function notice(message) { clearTimeout(toastTimer); $('#notice').textContent = message; $('#notice').hidden = !message; if (message) toastTimer = setTimeout(() => { $('#notice').hidden = true; }, 6000); }
 function bounded(promise, ms, message) { let timer; return Promise.race([promise, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), ms); })]).finally(() => clearTimeout(timer)); }
 function loadScript(url) { return new Promise((resolve, reject) => { const script = document.createElement('script'); script.src = url; script.onload = resolve; script.onerror = () => reject(new Error('A browser component could not load. Restart Harbor and reload.')); document.head.append(script); }); }
@@ -179,7 +181,7 @@ function closeTab(id) {
   renderTabs(); saveSession();
 }
 function reopenTab() { const item = closedTabs.pop(); if (item) newTab(item.url); else notice('No closed tabs to reopen.'); }
-function fail(tab, error) { tab.error = error.message || String(error); tab.loading = false; if (tab === active()) renderActive(); else renderTabs(); }
+function fail(tab, error) { devtools.note('error', 'Page failed to open: ' + (error.message || String(error)), tab); tab.error = error.message || String(error); tab.loading = false; if (tab === active()) renderActive(); else renderTabs(); }
 async function navigate(input, tab = active(), options = {}) {
   const url = resolveInput(input, settings.search); if (!url || !tab || tab.closed) return;
   tab.previousUrl = tab.url;
@@ -241,12 +243,13 @@ async function ensureEngine() {
     class HarborTransport extends Base {
       connect(url, protocols, headers, onopen, onmessage, onclose, onerror) {
         if (relay.mode === 'wisp') return super.connect(url, protocols, headers, onopen, onmessage, onclose, onerror);
-        const record = { host: url.hostname, startedAt: new Date().toISOString(), state: 'connecting', sentFrames: 0, receivedFrames: 0, path: 'Harbor relay' };
+        const record = { host: url.hostname, url: url.href, startedAt: new Date().toISOString(), state: 'connecting', sentFrames: 0, receivedFrames: 0, path: 'Harbor relay' };
         state.connections.push(record); state.connections = state.connections.slice(-30);
         return connectSocket(url, protocols, headers, onopen, onmessage, onclose, onerror, record);
       }
       async request(...args) {
-        if (settings.reduceAds && isFilteredHost(args[0].hostname)) { state.filteredRequests++; return filteredResponse(); }
+        const logged = devtools.request(args[0], args[1]);
+        if (settings.reduceAds && isFilteredHost(args[0].hostname)) { state.filteredRequests++; logged.blocked(); return filteredResponse(); }
         // CrazyGames blocks its game pages unless they're opened from its own player, and
         // the engine can drop the player's Referer on the way. Restore it when it's missing.
         if (args[0].hostname.endsWith('.game-files.crazygames.com') && Array.isArray(args[3])) {
@@ -255,7 +258,8 @@ async function ensureEngine() {
           try { fromCrazyGames = !!referer && /(^|\.)crazygames\.com$/.test(new URL(referer[1]).hostname); } catch {}
           if (!fromCrazyGames) args[3] = [...args[3].filter(([name]) => String(name).toLowerCase() !== 'referer'), ['Referer', 'https://games.crazygames.com/']];
         }
-        return assets.request(super.request.bind(this), ...args);
+        try { const result = await assets.request(super.request.bind(this), ...args); logged.done(result.status); return result; }
+        catch (error) { logged.fail(error); throw error; }
       }
     }
     state.transportName = relay.mode === 'wisp' ? 'Wisp' : 'Harbor';
