@@ -27,7 +27,9 @@ const { NodeTCPSocket } = await import(pathToFileURL(netPath).href);
 
 export function isAllowedDestination(hostname, port, address, fixturePort) {
   if (hostname === '127.0.0.1' && port === fixturePort && address === '127.0.0.1') return true;
-  return (port === 80 || port === 443) && ipaddr.isValid(address) && ipaddr.process(address).range() === 'unicast';
+  // Public internet addresses only. Games often run on high ports (8080, 2096, 9000…),
+  // so any port from 1024 up is allowed alongside 80 and 443.
+  return (port === 80 || port === 443 || (port >= 1024 && port <= 65535)) && ipaddr.isValid(address) && ipaddr.process(address).range() === 'unicast';
 }
 
 export async function startLab({ port = 4173, fixturePort = 4174, host = '127.0.0.1', tls } = {}) {
