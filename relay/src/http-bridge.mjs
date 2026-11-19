@@ -18,7 +18,9 @@ export function browserProfile(userAgent = '') {
   // runs Safari's engine and network stack, so all of them must look like Safari. Giving
   // them Chrome's network signature made Cloudflare checks loop on iPad Chrome and Firefox.
   if (/iPad|iPhone|iPod/.test(userAgent)) return 'ios18';
-  if (/Macintosh.*Version\/[\d.]+.*Safari\//.test(userAgent) && !/Chrome\/|Chromium|Edg/.test(userAgent)) return 'ios18';
+  // iPads usually present a Mac identity, and Firefox/Chrome on iPad may omit "Version/".
+  // Safari's engine always reports AppleWebKit/60x; Chrome-family browsers report 537.36.
+  if (/Macintosh/.test(userAgent) && /AppleWebKit\/60\d/.test(userAgent) && !/Chrome\/|Chromium|Edg/.test(userAgent)) return 'ios18';
   if (/Firefox\//.test(userAgent)) return 'firefox144';
   return 'chrome151';
 }

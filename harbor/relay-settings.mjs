@@ -26,7 +26,12 @@ export function forgetKey() {
   try { localStorage.removeItem('harbor:relay-key'); } catch {}
   try { sessionStorage.removeItem('harbor:relay-key'); } catch {}
 }
+// For one visit Harbor can switch to the backup server (when the main one is offline)
+// without changing what is saved.
+let sessionRelay = null;
+export function useRelayForSession(relay) { sessionRelay = relay; }
 export function getRelay() {
+  if (sessionRelay) return sessionRelay;
   try {
     const saved = JSON.parse(localStorage.getItem('harbor:relay') || '{}');
     const mode = saved.mode === 'harbor' ? 'harbor' : 'wisp';
@@ -39,6 +44,47 @@ export function saveRelay(mode, address, key = '') {
   if (key) localStorage.setItem('harbor:relay-key', key); else forgetKey();
   return getRelay();
 }
+// The backup server is used when the main one does not answer (e.g. your PC is off).
+export function getBackupRelay() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('harbor:relay-backup') || 'null');
+    if (!saved?.address) return null;
+    const mode = saved.mode === 'harbor' ? 'harbor' : 'wisp';
+    return { mode, address: normalizeRelay(mode, saved.address), key: String(saved.key || '') };
+  } catch { return null; }
+}
+export function saveBackupRelay(relay) {
+  try {
+    if (relay?.address) localStorage.setItem('harbor:relay-backup', JSON.stringify({ mode: relay.mode, address: relay.address, key: relay.key || '' }));
+    else localStorage.removeItem('harbor:relay-backup');
+  } catch {}
+}
+// One-tap setup link made by the Harbor Server launcher:
+//   …/index.svg#harbor-server=<base64url of {"a":"https://pc.tailnet.ts.net","k":"key"}>
+// The part after # never leaves the device. It is removed from every address bar Harbor
+// can reach as soon as it is read, and the server it replaces becomes the backup.
+export let setupLinkResult = null;
+(function readSetupLink() {
+  const windows = [];
+  try { for (let w = window; windows.length < 6; w = w.parent) { windows.push(w); if (w === w.parent) break; } } catch {}
+  for (const w of windows) {
+    let hash = '';
+    try { hash = w.location.hash; } catch { continue; }
+    const match = /[#&]harbor-server=([A-Za-z0-9_-]+)/.exec(hash);
+    if (!match) continue;
+    try { w.history.replaceState(w.history.state, '', w.location.pathname + w.location.search); } catch {}
+    if (setupLinkResult) continue;
+    try {
+      const text = atob(match[1].replace(/-/g, '+').replace(/_/g, '/'));
+      const data = JSON.parse(new TextDecoder().decode(Uint8Array.from(text, c => c.charCodeAt(0))));
+      const address = normalizeRelay('harbor', data.a);
+      const previous = getRelay();
+      if (previous.address && previous.address !== address) saveBackupRelay(previous);
+      saveRelay('harbor', address, String(data.k || ''));
+      setupLinkResult = { address, backup: getBackupRelay()?.address || '' };
+    } catch (error) { setupLinkResult = { error: 'That setup link is not valid: ' + (error.message || error) }; }
+  }
+})();
 export async function relayFetch(path, options = {}, override) {
   const relay = override || getRelay();
   if (relay.mode !== 'harbor' || !relay.address) throw new Error('Connect a Harbor server first.');

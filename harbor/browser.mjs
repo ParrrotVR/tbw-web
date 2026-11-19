@@ -1,4 +1,4 @@
-import { getRelay, relayFetch, portalBase, relayProtocols } from './relay-settings.mjs';
+import { getRelay, relayFetch, portalBase, relayProtocols, getBackupRelay, useRelayForSession } from './relay-settings.mjs';
 import { SEARCH_ENGINES, resolveInput, pageLabel } from './navigation.mjs';
 import { AssetCache } from './asset-cache.mjs';
 import { connectSocket } from './socket-client.mjs';
@@ -231,12 +231,23 @@ function activeWorker(registration) {
 async function ensureEngine() {
   if (enginePromise) return enginePromise;
   enginePromise = (async () => {
-    const relay = getRelay();
+    let relay = getRelay();
     if (!relay.address) {
       window.dispatchEvent(new Event('harbor:connect-needed'));
       throw new Error('Add a Wisp address or connect a Harbor server to browse. Your games are ready.');
     }
     if (!isSecureContext || !navigator.serviceWorker) throw new Error('Open the SVG link directly in Safari over HTTPS.');
+    // With a backup saved (e.g. Render behind a PC server), give the main server 10 s; if
+    // it is off, use the backup for this visit without changing the saved settings.
+    const backup = getBackupRelay();
+    if (relay.mode === 'harbor' && backup && backup.address !== relay.address) {
+      const reachable = await bounded(relayFetch('/api/health'), 10000, 'timeout').then(response => response.ok, () => false);
+      if (!reachable) {
+        useRelayForSession(backup); relay = backup;
+        devtools.note('warn', 'Main Harbor server did not answer; using the backup server ' + backup.address);
+        notice('Your main server is offline. Using the backup server.');
+      }
+    }
     if (relay.mode === 'harbor') {
       const response = await bounded(relayFetch('/api/health'), 90000, 'The Harbor server did not answer. It may need more time to wake up.');
       if (!response.ok) throw new Error('The Harbor connection was rejected. Check its address and access key.');
