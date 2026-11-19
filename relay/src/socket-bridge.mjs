@@ -1,5 +1,6 @@
 import { WebSocket, WebSocketServer } from 'ws';
-import { lookup } from 'node:dns/promises';
+import net from 'node:net';
+import { resolveAddress } from './resolve-address.mjs';
 import { socketCertificateAuthorities } from './tls-chain.mjs';
 
 // A browser-native WebSocket on the local side; Node handles the target TLS and
@@ -28,7 +29,7 @@ export function createSocketBridge({ fixturePort, isAllowedDestination, diagnost
             const url = new URL(config.url);
             if (!['ws:', 'wss:'].includes(url.protocol) || url.username || url.password) throw new Error('Unsupported socket address');
             const port = Number(url.port || (url.protocol === 'wss:' ? 443 : 80));
-            const { address } = await lookup(url.hostname, { family: 4 });
+            const { address } = await resolveAddress(url.hostname);
             if (!isAllowedDestination(url.hostname, port, address, fixturePort)) throw new Error('Destination outside browser scope');
             const protocols = config.protocols ?? [];
             if (!Array.isArray(protocols) || protocols.length > 16 || protocols.some(p => typeof p !== 'string' || !/^[!#$%&'*+\-.^_`|~\da-z]+$/i.test(p))) throw new Error('Invalid subprotocol');
@@ -53,7 +54,7 @@ export function createSocketBridge({ fixturePort, isAllowedDestination, diagnost
               headers, perMessageDeflate: true, handshakeTimeout: 12000,
               maxPayload: 16 * 1024 * 1024,
               ca: certificateAuthorities, rejectUnauthorized: true,
-              lookup(_name, options, callback) { callback(null, options?.all ? [{ address, family: 4 }] : address, 4); },
+              lookup(_name, options, callback) { const family = net.isIP(address); callback(null, options?.all ? [{ address, family }] : address, family); },
             });
             upstreams.add(upstream);
             upstream.on('open', () => {

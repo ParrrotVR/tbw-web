@@ -2,7 +2,7 @@ import http from 'node:http';
 import https from 'node:https';
 import net from 'node:net';
 import { randomBytes } from 'node:crypto';
-import { lookup } from 'node:dns/promises';
+import { resolveAddress } from './resolve-address.mjs';
 import { createBrotliDecompress, createGunzip, createInflate } from 'node:zlib';
 import { pipeline, Readable } from 'node:stream';
 import { Impit } from 'impit';
@@ -14,8 +14,12 @@ const impitMethods = new Set(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', '
 // connection that reaches them, and challenge Node's own TLS on sight. HTTPS
 // therefore goes through impit, which presents the matching browser's handshake.
 export function browserProfile(userAgent = '') {
+  // Every iPhone and iPad browser (Safari, Chrome "CriOS", Firefox "FxiOS", Edge "EdgiOS")
+  // runs Safari's engine and network stack, so all of them must look like Safari. Giving
+  // them Chrome's network signature made Cloudflare checks loop on iPad Chrome and Firefox.
+  if (/iPad|iPhone|iPod/.test(userAgent)) return 'ios18';
+  if (/Macintosh.*Version\/[\d.]+.*Safari\//.test(userAgent) && !/Chrome\/|Chromium|Edg/.test(userAgent)) return 'ios18';
   if (/Firefox\//.test(userAgent)) return 'firefox144';
-  if (/(iPad|iPhone|Macintosh).*Version\/[\d.]+.*Safari\//.test(userAgent) && !/Chrome\/|CriOS|Edg/.test(userAgent)) return 'ios18';
   return 'chrome151';
 }
 export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostics = {}, originAllowed, impersonate = process.env.HARBOR_IMPERSONATE !== '0' }) {
@@ -44,7 +48,7 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
   async function resolve(hostname) {
     const cached = dns.get(hostname);
     if (cached && cached.expires > Date.now()) return cached.promise;
-    const entry = { expires: Date.now() + 30000, promise: lookup(hostname, { family: 4 }) };
+    const entry = { expires: Date.now() + 30000, promise: resolveAddress(hostname) };
     dns.set(hostname, entry);
     if (dns.size > 256) dns.delete(dns.keys().next().value);
     try { return await entry.promise; } catch (error) { if (dns.get(hostname) === entry) dns.delete(hostname); throw error; }
@@ -118,8 +122,9 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
     headers['accept-encoding'] = 'gzip, deflate, br';
     const client = url.protocol === 'https:' ? https : http;
     const remote = client.request(url, {
-      method: config.method, headers, agent: url.protocol === 'https:' ? httpsAgent : httpAgent,
-      lookup(_name, options, callback) { callback(null, options?.all ? [{ address, family: 4 }] : address, 4); },
+      // Node's default 16 KB response-header limit rejects big sites such as YouTube.
+      method: config.method, headers, agent: url.protocol === 'https:' ? httpsAgent : httpAgent, maxHeaderSize: 256 * 1024,
+      lookup(_name, options, callback) { const family = net.isIP(address); callback(null, options?.all ? [{ address, family }] : address, family); },
     });
     requests.add(remote);
     remote.once('close', () => requests.delete(remote));
