@@ -293,3 +293,33 @@ if (window !== top) {
     } catch {}
   });
 }
+
+// Announcements: notice.json lives on its own "notice" branch, outside Harbor's releases, so a
+// message (for example "the server is running out of data") can change without a new
+// version. It pops up once per message id; the chip on the home screen reopens it.
+// {"id","title","message","level":"warning|info","until":"YYYY-MM-DD","link":{"label","url"}}
+{
+  const sources = ['https://cdn.jsdelivr.net/gh/ParrrotVR/tbw-web@notice/notice.json', 'https://raw.githubusercontent.com/ParrrotVR/tbw-web/notice/notice.json'];
+  const dialog = $('#announce-dialog');
+  const show = () => { if (!dialog.open) dialog.showModal(); };
+  $('#announce-chip').addEventListener('click', show);
+  $('#announce-ok').addEventListener('click', () => { try { localStorage.setItem('harbor:notice-seen', dialog.dataset.id || ''); } catch {} dialog.close(); });
+  (async () => {
+    let notice = null;
+    for (const url of sources) {
+      try { const response = await fetch(url, { cache: 'no-cache', credentials: 'omit' }); if (response.ok) { notice = await response.json(); break; } } catch {}
+    }
+    if (!notice || !notice.id || !notice.message) return;
+    if (notice.until && Date.now() > Date.parse(notice.until + 'T23:59:59')) return;
+    dialog.dataset.id = String(notice.id); dialog.dataset.level = notice.level === 'info' ? 'info' : 'warning';
+    $('#announce-title').textContent = String(notice.title || 'Notice');
+    $('#announce-message').textContent = String(notice.message);
+    const link = $('#announce-link');
+    if (notice.link?.url && /^https:\/\//.test(notice.link.url)) { link.href = notice.link.url; link.textContent = String(notice.link.label || notice.link.url); link.hidden = false; }
+    $('#announce-date').textContent = notice.updated ? 'Updated ' + new Date(notice.updated).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+    $('#announce-chip-text').textContent = String(notice.short || notice.title || 'Notice');
+    $('#announce-chip').hidden = false;
+    let seen = null; try { seen = localStorage.getItem('harbor:notice-seen'); } catch {}
+    if (seen !== String(notice.id)) show();
+  })();
+}
