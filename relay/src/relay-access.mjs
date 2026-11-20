@@ -27,7 +27,7 @@ export function relayAccess(env = process.env) {
       res.vary('Origin');
     }
     if (req.method === 'OPTIONS') return res.sendStatus(204);
-    if (req.path === '/api/health' && req.method === 'GET' && !origin) return next();
+    if ((req.path === '/api/health' || req.path === '/api/egress') && req.method === 'GET' && !origin) return next();
     if (!keyAllowed(req.headers['x-harbor-key'])) return res.status(401).type('text').send('Harbor access key required');
     next();
   }
