@@ -86,6 +86,22 @@ export async function startLab({ port = 4173, fixturePort = 4174, host = '127.0.
   app.get('/api/health', (_req, res) => res.json({ ok: true, name: 'Harbor', version, build, fixtureOrigin, engine: 'Scramjet 2.0.67-alpha.2', controller: '0.0.14', transport: 'native streaming', nativeHttp: true, socketBridge: true, browserTls: process.env.HARBOR_IMPERSONATE !== '0', udp: false }));
   app.get('/api/time', (_req, res) => res.json({ now: Date.now(), iso: new Date().toISOString() }));
   app.get('/api/diagnostics', (_req, res) => res.json(diagnostics));
+  // Which public addresses this server's outgoing traffic uses, over separate connections.
+  // Cloudflare ties its clearance cookie to one address, so several addresses here would
+  // explain endless "verify you are human" loops. Cached; no key needed; reveals nothing private.
+  let egress;
+  app.get('/api/egress', async (_req, res) => {
+    if (!egress || Date.now() - egress.at > 300000) egress = { at: Date.now(), result: (async () => {
+      const viaNode = () => new Promise(resolve => {
+        const request = https.get('https://api.ipify.org?format=json', { agent: false, timeout: 8000 }, response => { let body = ''; response.on('data', chunk => body += chunk); response.on('end', () => { try { resolve(JSON.parse(body).ip); } catch { resolve('error'); } }); });
+        request.on('error', () => resolve('error')); request.on('timeout', () => request.destroy());
+      });
+      const viaBrowserTls = async () => { try { const { Impit } = await import('impit'); const response = await new Impit({ browser: 'ios18' }).fetch('https://api.ipify.org?format=json'); return JSON.parse(await response.text()).ip; } catch { return 'error'; } };
+      const addresses = await Promise.all([viaNode(), viaNode(), viaNode(), viaNode(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls()]);
+      return { checkedAt: new Date().toISOString(), addresses, distinct: [...new Set(addresses.filter(ip => ip !== 'error'))] };
+    })() };
+    res.json(await egress.result);
+  });
   app.post('/http/', httpBridge.handle);
   const vendorCache = { setHeaders(res) { res.setHeader('Cache-Control', 'public, max-age=86400'); } };
   app.use('/scramjet', express.static(path.join(root, 'node_modules/@mercuryworkshop/scramjet/dist'), vendorCache));
