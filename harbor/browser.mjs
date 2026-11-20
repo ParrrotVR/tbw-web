@@ -264,6 +264,8 @@ async function ensureEngine() {
     }
     if (relay.mode === 'harbor') {
       const response = await bounded(relayFetch('/api/health'), 90000, 'The Harbor server did not answer. It may need more time to wake up.');
+      if (response.status === 401) { window.dispatchEvent(new Event('harbor:connect-needed')); throw new Error('This Harbor server needs an access key. Add it in Connection.'); }
+      if (response.status === 429) throw new Error('This Harbor server is busy for your device. Wait a minute and try again.');
       if (!response.ok) throw new Error('The Harbor connection was rejected. Check its address and access key.');
       state.health = await response.json();
       if (state.health.name !== 'Harbor' || !state.health.nativeHttp) throw new Error('This server does not provide the Harbor HTTP relay.');

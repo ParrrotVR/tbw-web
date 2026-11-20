@@ -28,12 +28,15 @@ export function forgetKey() {
 }
 // For one visit Harbor can switch to the backup server (when the main one is offline)
 // without changing what is saved.
+export const DEFAULT_SERVER = 'https://harbor-relay.onrender.com';
 let sessionRelay = null;
 export function useRelayForSession(relay) { sessionRelay = relay; }
 export function getRelay() {
   if (sessionRelay) return sessionRelay;
   try {
     const saved = JSON.parse(localStorage.getItem('harbor:relay') || '{}');
+    // Nothing set up yet: use Harbor's own public server, no key needed when it runs in public mode.
+    if (!saved.address) return { mode: 'harbor', address: DEFAULT_SERVER, key: savedKey(), isDefault: true };
     const mode = saved.mode === 'harbor' ? 'harbor' : 'wisp';
     return { mode, address: saved.address ? normalizeRelay(mode, saved.address) : '', key: savedKey() };
   } catch { return { mode: 'wisp', address: '', key: '' }; }
