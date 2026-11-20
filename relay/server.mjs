@@ -98,7 +98,10 @@ export async function startLab({ port = 4173, fixturePort = 4174, host = '127.0.
       });
       const viaBrowserTls = async () => { try { const { Impit } = await import('impit'); const response = await new Impit({ browser: 'ios18' }).fetch('https://api.ipify.org?format=json'); return JSON.parse(await response.text()).ip; } catch { return 'error'; } };
       const addresses = await Promise.all([viaNode(), viaNode(), viaNode(), viaNode(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls()]);
-      return { checkedAt: new Date().toISOString(), addresses, distinct: [...new Set(addresses.filter(ip => ip !== 'error'))] };
+      // Fixed sample sites (not user-chosen): does Cloudflare challenge this server's address?
+      const probe = async (url, browser) => { try { const { Impit } = await import('impit'); const response = await new Impit({ browser, followRedirects: false }).fetch(url, { headers: [['accept', 'text/html'], ['accept-language', 'en-US,en;q=0.9']] }); await response.arrayBuffer().catch(() => {}); return `${response.status}${response.headers.get('cf-mitigated') ? ' challenged' : ''}`; } catch (error) { return 'error ' + String(error.message).slice(0, 60); } };
+      const sites = { 'neal.fun ios18': await probe('https://neal.fun/', 'ios18'), 'neal.fun chrome151': await probe('https://neal.fun/', 'chrome151'), 'neal.fun firefox144': await probe('https://neal.fun/', 'firefox144') };
+      return { checkedAt: new Date().toISOString(), addresses, distinct: [...new Set(addresses.filter(ip => ip !== 'error'))], sites };
     })() };
     res.json(await egress.result);
   });
