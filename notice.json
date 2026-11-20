@@ -1,0 +1,9 @@
+{
+  "id": "2026-11-20T14:10:28.337Z",
+  "updated": "2026-11-20T14:10:28.339Z",
+  "level": "warning",
+  "title": "Harbor is almost out of data",
+  "short": "Low on data",
+  "message": "Harbor's free server has used almost all of this month's data. Pages and games may stop loading partway through until it resets on December 1. A bigger server is on the way.",
+  "until": "2026-11-30"
+}
