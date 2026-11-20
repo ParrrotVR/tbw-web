@@ -3,7 +3,7 @@ import https from 'node:https';
 import net from 'node:net';
 import { randomBytes } from 'node:crypto';
 import { resolveAddress } from './resolve-address.mjs';
-import { createBrotliDecompress, createGunzip, createInflate } from 'node:zlib';
+import { createBrotliDecompress, createGunzip, createInflate, createBrotliCompress, createGzip, constants as zlibConstants } from 'node:zlib';
 import { pipeline, Readable } from 'node:stream';
 import { Impit } from 'impit';
 import { socketCertificateAuthorities } from './tls-chain.mjs';
@@ -111,11 +111,25 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
   }
   if (impersonate) impitFor('chrome151').catch(() => {});
 
-  function sendHead(res, status, statusText, rawHeaders) {
+  // Text (pages, scripts, styles, data) travels to the browser compressed: sites send it
+  // compressed, but the relay has to decode it, and resending it raw used several times
+  // the bandwidth. The browser unpacks it by itself. Images and video are already
+  // compressed and pass through unchanged. Each chunk is flushed so streams stay live.
+  function compressible(type, length) {
+    if (length !== null && length !== undefined && Number(length) < 512) return false;
+    return /^(text\/|application\/(javascript|x-javascript|ecmascript|json|xml|xhtml\+xml|rss\+xml|atom\+xml|wasm|manifest\+json|ld\+json|x-www-form-urlencoded)|image\/svg\+xml|font\/(ttf|otf)|image\/x-icon)|[+](json|xml)\b/i.test(String(type || ''));
+  }
+  function sendHead(res, status, statusText, rawHeaders, compress = false) {
     const metadata = Buffer.from(JSON.stringify({ status, statusText, headers: rawHeaders }));
     const size = Buffer.alloc(4); size.writeUInt32BE(metadata.length);
-    res.status(200).set({ 'Content-Type': 'application/octet-stream', 'Cache-Control': 'no-store', 'X-Harbor-Stream': '1' });
-    res.write(size); res.write(metadata);
+    const accepts = String(res.req?.headers['accept-encoding'] || '');
+    let sink = res, encoding = '';
+    if (compress && /\bbr\b/.test(accepts)) { encoding = 'br'; sink = createBrotliCompress({ flush: zlibConstants.BROTLI_OPERATION_FLUSH, params: { [zlibConstants.BROTLI_PARAM_QUALITY]: 4 } }); }
+    else if (compress && /\bgzip\b/.test(accepts)) { encoding = 'gzip'; sink = createGzip({ level: 5, flush: zlibConstants.Z_SYNC_FLUSH }); }
+    res.status(200).set({ 'Content-Type': 'application/octet-stream', 'Cache-Control': 'no-store', 'X-Harbor-Stream': '1', ...(encoding ? { 'Content-Encoding': encoding, Vary: 'Accept-Encoding' } : {}) });
+    if (sink !== res) { sink.pipe(res); sink.once('error', () => res.destroy()); }
+    sink.write(size); sink.write(metadata);
+    return sink;
   }
 
   async function impitRequest(req, res, url, config, headers, record) {
@@ -147,9 +161,10 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
     const rawHeaders = [];
     for (const [name, value] of response.headers) if (!hopHeaders.has(name) && name !== 'content-encoding' && name !== 'set-cookie') rawHeaders.push([name, value]);
     for (const cookie of response.headers.getSetCookie()) rawHeaders.push(['set-cookie', cookie]);
-    sendHead(res, response.status, response.statusText || '', rawHeaders);
-    if (config.method === 'HEAD' || [204, 205, 304].includes(response.status) || !response.body) { response.body?.cancel().catch(() => {}); res.end(); return; }
-    pipeline(Readable.fromWeb(response.body), res, () => {});
+    const bodyAllowed = config.method !== 'HEAD' && ![204, 205, 304].includes(response.status) && !!response.body;
+    const sink = sendHead(res, response.status, response.statusText || '', rawHeaders, bodyAllowed && compressible(response.headers.get('content-type'), response.headers.get('content-length')));
+    if (!bodyAllowed) { response.body?.cancel().catch(() => {}); sink.end(); return; }
+    pipeline(Readable.fromWeb(response.body), sink, error => { if (error) res.destroy(); });
   }
 
   function nodeRequest(req, res, url, config, headers, address, record) {
@@ -182,11 +197,11 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
       if (decoder) responseExcluded.add('content-encoding');
       const rawHeaders = [];
       for (let i = 0; i < response.rawHeaders.length; i += 2) if (!responseExcluded.has(response.rawHeaders[i].toLowerCase())) rawHeaders.push([response.rawHeaders[i], response.rawHeaders[i + 1]]);
-      sendHead(res, response.statusCode, response.statusMessage || '', rawHeaders);
-      if (!bodyAllowed) { response.resume(); res.end(); return; }
+      const sink = sendHead(res, response.statusCode, response.statusMessage || '', rawHeaders, bodyAllowed && (decoder || !encoding) && compressible(response.headers['content-type'], decoder ? null : response.headers['content-length']));
+      if (!bodyAllowed) { response.resume(); sink.end(); return; }
       // Backpressure and decompression run outside the browser's rendering
       // thread. Headers arrive before the rest of a large image or download.
-      pipeline(...(decoder ? [response, decoder, res] : [response, res]), () => {});
+      pipeline(...(decoder ? [response, decoder, sink] : [response, sink]), error => { if (error) res.destroy(); });
     });
     if (config.method === 'GET' || config.method === 'HEAD') { req.resume(); remote.end(); }
     else req.pipe(remote);
