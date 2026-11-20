@@ -24,6 +24,32 @@ export function browserProfile(userAgent = '') {
   if (/Firefox\//.test(userAgent)) return 'firefox144';
   return 'chrome151';
 }
+// Cloudflare scores each browser signature per server address and changes its mind over
+// time: from Render, neal.fun once let Safari's signature through and challenged others,
+// later the reverse. When a plain GET is challenged, try the other signatures, each with
+// its own matching User-Agent, and remember the one that passes for that site for 30 min.
+const SIGNATURES = ['ios18', 'firefox144', 'chrome151'];
+const signatureMemory = new Map();
+const challenged = response => response.headers.get('cf-mitigated') === 'challenge';
+export async function fetchWithFallback({ host, method, preferred, send }) {
+  const remembered = signatureMemory.get(host);
+  let profile = remembered && remembered.until > Date.now() ? remembered.profile : preferred;
+  let response = await send(profile, profile !== preferred);
+  if (!['GET', 'HEAD'].includes(method) || !challenged(response)) return { response, profile };
+  for (const alternative of SIGNATURES.filter(item => item !== profile)) {
+    const attempt = await send(alternative, alternative !== preferred).catch(() => null);
+    if (attempt && !challenged(attempt)) {
+      response.body?.cancel().catch(() => {});
+      signatureMemory.set(host, { profile: alternative, until: Date.now() + 30 * 60 * 1000 });
+      if (signatureMemory.size > 500) signatureMemory.delete(signatureMemory.keys().next().value);
+      return { response: attempt, profile: alternative };
+    }
+    attempt?.body?.cancel().catch(() => {});
+  }
+  if (remembered) signatureMemory.delete(host);
+  return { response, profile };
+}
+
 export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostics = {}, originAllowed, impersonate = process.env.HARBOR_IMPERSONATE !== '0' }) {
   // Request summaries for /api/diagnostics: host, path without query, status,
   // timing and Cloudflare mitigation. No headers, cookies or bodies are kept.
@@ -108,8 +134,12 @@ export function createHttpBridge({ fixturePort, isAllowedDestination, diagnostic
     const timer = setTimeout(abort, 30000);
     let response;
     // The page says which engine really runs it (iPad Firefox/Chrome run Safari's engine).
-    const profile = config.engine === 'webkit' ? 'ios18' : browserProfile(headers['user-agent']);
-    try { response = await (await impitFor(profile)).fetch(url.href, { method: config.method, headers: outgoing, body, redirect: 'manual', signal: controller.signal }); }
+    const preferred = config.engine === 'webkit' ? 'ios18' : browserProfile(headers['user-agent']);
+    // A substitute signature must not carry the browser's own User-Agent/client hints,
+    // or they would contradict it; impit then supplies ones that match.
+    const ownIdentity = outgoing.filter(([name]) => !/^(user-agent|sec-ch-ua)/i.test(name));
+    const send = async (profile, substitute) => (await impitFor(profile)).fetch(url.href, { method: config.method, headers: substitute ? ownIdentity : outgoing, body, redirect: 'manual', signal: controller.signal });
+    try { ({ response } = await fetchWithFallback({ host: url.host, method: config.method, preferred, send })); }
     finally { clearTimeout(timer); }
     record(response.status, 'browser-tls', response.headers.get('cf-mitigated'));
     if (process.env.HARBOR_DEBUG) console.log('Remote', response.status, config.method, url.host + url.pathname, '(browser TLS)');

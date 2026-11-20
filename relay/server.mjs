@@ -13,7 +13,7 @@ import { server as wisp, logging } from '@mercuryworkshop/wisp-js/server';
 import { createFixture } from './src/fixture-server.mjs';
 import { createSocketBridge } from './src/socket-bridge.mjs';
 import { decodeProxyPath } from './public/navigation.mjs';
-import { createHttpBridge } from './src/http-bridge.mjs';
+import { createHttpBridge, fetchWithFallback } from './src/http-bridge.mjs';
 import { buildId } from './src/build-id.mjs';
 
 const root = path.dirname(fileURLToPath(import.meta.url));
@@ -100,7 +100,9 @@ export async function startLab({ port = 4173, fixturePort = 4174, host = '127.0.
       const addresses = await Promise.all([viaNode(), viaNode(), viaNode(), viaNode(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls(), viaBrowserTls()]);
       // Fixed sample sites (not user-chosen): does Cloudflare challenge this server's address?
       const probe = async (url, browser) => { try { const { Impit } = await import('impit'); const response = await new Impit({ browser, followRedirects: false }).fetch(url, { headers: [['accept', 'text/html'], ['accept-language', 'en-US,en;q=0.9']] }); await response.arrayBuffer().catch(() => {}); return `${response.status}${response.headers.get('cf-mitigated') ? ' challenged' : ''}`; } catch (error) { return 'error ' + String(error.message).slice(0, 60); } };
-      const sites = { 'neal.fun ios18': await probe('https://neal.fun/', 'ios18'), 'neal.fun chrome151': await probe('https://neal.fun/', 'chrome151'), 'neal.fun firefox144': await probe('https://neal.fun/', 'firefox144') };
+      const smart = async (url, preferred) => { try { const { Impit } = await import('impit'); const send = (browser, substitute) => new Impit({ browser, followRedirects: false }).fetch(url, { headers: [['accept', 'text/html'], ['accept-language', 'en-US,en;q=0.9'], ...(substitute ? [] : [['user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15']])] }); const { response, profile } = await fetchWithFallback({ host: 'probe:' + new URL(url).host, method: 'GET', preferred, send }); await response.arrayBuffer().catch(() => {}); return `${response.status}${challenged(response) ? ' challenged' : ''} via ${profile}`; } catch (error) { return 'error ' + String(error.message).slice(0, 60); } };
+      const challenged = response => response.headers.get('cf-mitigated') === 'challenge';
+      const sites = { 'neal.fun ios18': await probe('https://neal.fun/', 'ios18'), 'neal.fun chrome151': await probe('https://neal.fun/', 'chrome151'), 'neal.fun firefox144': await probe('https://neal.fun/', 'firefox144'), 'neal.fun as Harbor (Safari, with fallback)': await smart('https://neal.fun/', 'ios18') };
       return { checkedAt: new Date().toISOString(), addresses, distinct: [...new Set(addresses.filter(ip => ip !== 'error'))], sites };
     })() };
     res.json(await egress.result);
