@@ -29,6 +29,8 @@ export function isAllowedDestination(hostname, port, address, fixturePort) {
   if (hostname === '127.0.0.1' && port === fixturePort && address === '127.0.0.1') return true;
   // Public internet addresses only. Games often run on high ports (8080, 2096, 9000…),
   // so any port from 1024 up is allowed alongside 80 and 443.
+  // Mail ports stay closed so a public relay can't be used to send spam.
+  if ([2525, 10025].includes(port)) return false;
   return (port === 80 || port === 443 || (port >= 1024 && port <= 65535)) && ipaddr.isValid(address) && ipaddr.process(address).range() === 'unicast';
 }
 
@@ -83,7 +85,7 @@ export async function startLab({ port = 4173, fixturePort = 4174, host = '127.0.
     });
     next();
   });
-  app.get('/api/health', (_req, res) => res.json({ ok: true, name: 'Harbor', version, build, fixtureOrigin, engine: 'Scramjet 2.0.67-alpha.2', controller: '0.0.14', transport: 'native streaming', nativeHttp: true, socketBridge: true, browserTls: process.env.HARBOR_IMPERSONATE !== '0', udp: false }));
+  app.get('/api/health', (_req, res) => res.json({ ok: true, name: 'Harbor', version, build, fixtureOrigin, engine: 'Scramjet 2.0.67-alpha.2', controller: '0.0.14', transport: 'native streaming', nativeHttp: true, socketBridge: true, browserTls: process.env.HARBOR_IMPERSONATE !== '0', udp: false, public: access.open }));
   app.get('/api/time', (_req, res) => res.json({ now: Date.now(), iso: new Date().toISOString() }));
   app.get('/api/diagnostics', (_req, res) => res.json(diagnostics));
   // Which public addresses this server's outgoing traffic uses, over separate connections.

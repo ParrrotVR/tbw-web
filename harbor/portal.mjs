@@ -223,6 +223,11 @@ function openConnection() {
 for (const id of ['connect-browser', 'connection-button']) $('#' + id).addEventListener('click', openConnection);
 window.addEventListener('harbor:connect-needed', openConnection);
 $('#relay-backup-remove').addEventListener('click', () => { saveBackupRelay(null); showBackup(); });
+$('#relay-backup-promote').addEventListener('click', async () => {
+  const backup = getBackupRelay(); if (!backup) return;
+  saveRelay(backup.mode, backup.address, backup.key); saveBackupRelay(null); useRelayForSession(null);
+  await closeGame(); location.reload();
+});
 $('#relay-retry-main').addEventListener('click', async () => { useRelayForSession(null); await closeGame(); location.reload(); });
 // A setup link from the Harbor Server launcher was opened: say what happened.
 if (setupLinkResult) {
